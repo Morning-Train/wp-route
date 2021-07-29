@@ -1,0 +1,17 @@
+{
+  "name": "morningtrain/wp-router",
+  "description": "A simple router for WordPress",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Morningtrain",
+      "email": "mh@morningtrain.dk"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Morningtrain\\WP\\Router\\": "src/"
+    }
+  }
+}
