@@ -1,6 +1,6 @@
 {
-  "name": "morningtrain/wp-router",
-  "description": "A simple router for WordPress",
+  "name": "morningtrain/wp-route",
+  "description": "A simple route service for WordPress",
   "minimum-stability": "stable",
   "license": "proprietary",
   "authors": [
@@ -11,7 +11,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "Morningtrain\\WP\\Router\\": "src/"
+      "Morningtrain\\WP\\Route\\": "src/"
     }
   }
 }

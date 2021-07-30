@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Morningtrain\WP\Router;
+namespace Morningtrain\WP\Route;
 
 
 class Route
