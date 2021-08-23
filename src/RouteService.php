@@ -83,7 +83,7 @@ class RouteService
             $i++;
         }
 
-        foreach ($route->getParams() as $param){
+        foreach ($route->getParams() as $param) {
             static::addRewriteTag($param, $route->getParamRegex($param));
         }
 
@@ -172,6 +172,78 @@ class RouteService
     public static function addRoute(Route $route)
     {
         static::$routes[urlencode($route->getPath())] = $route;
+    }
+
+    /**
+     * Updates a route object by name or matching path AND methods
+     *
+     * @param Route $route
+     */
+    public static function updateRoute(Route $route)
+    {
+        foreach (static::$routes as $k => $_route) {
+            if ($_route->getName() === $route->getName() || ($_route->getPath() === $route->getPath(
+                    ) && $_route->getRequestMethods() === $route->getRequestMethods())) {
+                // These routes match! And should be updated
+                static::$routes[$k] = $route;
+            }
+        }
+    }
+
+    /**
+     * Gets a defined route by name
+     *
+     * @param string $name
+     * @return Route|null
+     */
+    public static function getRoute(string $name): ?Route
+    {
+        foreach (static::$routes as $route) {
+            if ($route->getName() === $name) {
+                return $route;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the URL of a named route
+     *
+     * @param string $name
+     * @param ?array $args
+     *
+     * @return string|null
+     */
+    public static function getUrl(string $name, $args = []): ?string
+    {
+        $route = static::getRoute($name);
+        if (!$route) {
+            return null;
+        }
+
+        return $route->getUrl($args);
+    }
+
+    /**
+     * Returns the currently matched route
+     *
+     * @return Route|null
+     */
+    public static function currentRoute(): ?Route
+    {
+        return static::$matched_route;
+    }
+
+    /**
+     * Checks if a route is currently matched
+     *
+     * @param string $name
+     * @return bool
+     */
+    public static function isCurrentRoute(string $name): bool
+    {
+        return is_a(static::$matched_route, Route::class) && static::$matched_route->getName() === $name;
     }
 
     /**

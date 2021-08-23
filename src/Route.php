@@ -6,6 +6,7 @@ namespace Morningtrain\WP\Route;
 
 class Route
 {
+    private ?string $name = null;
     private string $path;
     private array $request_methods = [];
     private string $position = 'top';
@@ -57,7 +58,29 @@ class Route
     }
 
     /**
+     * Returns the relative URL of a route
+     *
+     * @param array $args the values of the route args, if any.
+     * Eg. For the route /user/{user_id} -> /user/12
+     * $args would be ['user_id'=>12]
+     *
+     * @return string
+     */
+    public function getUrl($args = []): string
+    {
+        $tokens = array_map(
+            function ($k) {
+                return "{" . $k . "}";
+            },
+            array_keys($args)
+        );
+
+        return str_replace($tokens, array_values($args), $this->getPath());
+    }
+
+    /**
      * Get the callback
+     *
      * @return callable
      */
     public function getCallback(): callable
@@ -157,6 +180,30 @@ class Route
 
         return $this->customParamRegexes[$param];
     }
+
+    /**
+     * Gets the name
+     *
+     * @return string|null
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    /**
+     * Sets the name of the route
+     *
+     * @param string $name
+     * @return $this
+     */
+    public function name(string $name): self
+    {
+        $this->name = $name;
+        RouteService::updateRoute($this);
+        return $this;
+    }
+
 
     /**
      * Register a Route that accepts any HTTP request method
