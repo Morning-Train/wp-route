@@ -60,13 +60,13 @@ class Route
     /**
      * Returns the relative URL of a route
      *
-     * @param array $args the values of the route args, if any.
+     * @param ?array $args the values of the route args, if any.
      * Eg. For the route /user/{user_id} -> /user/12
      * $args would be ['user_id'=>12]
      *
      * @return string
      */
-    public function getUrl($args = []): string
+    public function getUrl(?array $args = []): string
     {
         $tokens = array_map(
             function ($k) {
