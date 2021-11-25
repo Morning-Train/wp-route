@@ -313,4 +313,53 @@ class Route
     {
         return static::match(['OPTIONS'], $path, $callback);
     }
+
+    /**
+     * Gets a defined route by name
+     * Wrapper to allow access through this class
+     *
+     * @param string $name
+     * @return Route|null
+     */
+    public static function exists(string $name): bool
+    {
+        return RouteService::exists($name);
+    }
+
+    /**
+     * Returns the URL of a named route
+     * Wrapper to allow access through this class
+     *
+     * @param string $name
+     * @param ?array $args
+     *
+     * @return string|null
+     */
+    public static function route(string $name, $args = []): ?string
+    {
+        return RouteService::getUrl($name, $args);
+    }
+
+    /**
+     * Checks if a route is currently matched
+     *
+     * @param string $name
+     * @return bool
+     * @see RouteService::isCurrentRoute
+     */
+    public static function is(string $name): bool
+    {
+        return RouteService::isCurrentRoute($name);
+    }
+
+    /**
+     * Returns the currently matched route
+     *
+     * @return Route|null
+     * @see RouteService::currentRoute
+     */
+    public static function current(): ?Route
+    {
+        return RouteService::currentRoute();
+    }
 }

@@ -208,12 +208,28 @@ class RouteService
     }
 
     /**
+     * Whether a named route exists or not
+     * For internal use. Use Route::exists instead
+     *
+     * @param string $name
+     * @return bool
+     * @see Route::exists
+     */
+    public static function exists(string $name): bool
+    {
+        return is_a(static::getRoute($name), Route::class);
+    }
+
+    /**
      * Returns the URL of a named route
+     * For internal use. Use Route::route instead
      *
      * @param string $name
      * @param ?array $args
      *
      * @return string|null
+     * @see Route::route
+     *
      */
     public static function getUrl(string $name, $args = []): ?string
     {
@@ -222,13 +238,15 @@ class RouteService
             return null;
         }
 
-        return $route->getUrl($args);
+        return trim(\home_url(),'/') . $route->getUrl($args);
     }
 
     /**
      * Returns the currently matched route
+     * For internal use. Use Route::current instead
      *
      * @return Route|null
+     * @see Route::current
      */
     public static function currentRoute(): ?Route
     {
@@ -237,9 +255,13 @@ class RouteService
 
     /**
      * Checks if a route is currently matched
+     * For internal use. Use Route::is instead
      *
      * @param string $name
+     *
      * @return bool
+     * @see Route::is
+     *
      */
     public static function isCurrentRoute(string $name): bool
     {
