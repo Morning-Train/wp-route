@@ -17,21 +17,29 @@ class RouteService
     /** The currently matched route
      * @var ?Route $route
      */
-    private static ?Route $matched_route = null;
+    private static ?Route $matchedRoute = null;
 
     /** Option name for the generated routes hash. If the hash changes rewrite rules will be flushed
-     * @var string $hash_option
+     * @var string $hashOption
      */
-    private static string $hash_option = 'mtwp_route_hash';
+    private static string $hashOption = 'mtwp_route_hash';
+
+    private static bool $actionsHasBeenAdded = false;
 
     /**
-     * Sets up actions for the routeservice to function
+     * Sets up actions for the route service to function
      */
     public static function setup()
     {
+        if (static::$actionsHasBeenAdded) {
+            return;
+        }
+
         \add_action('init', [static::class, 'registerRoutes']);
         \add_action('parse_request', [static::class, 'matchRequest']);
         \add_action('template_redirect', [static::class, 'onTemplateRedirect']);
+
+        static::$actionsHasBeenAdded = true;
     }
 
     /**
@@ -46,10 +54,10 @@ class RouteService
             static::addRewriteRule($name, $route);
         }
 
-        $routes_hash = md5(serialize($routes));
-        if ($routes_hash != get_option(static::$hash_option)) {
+        $routesHash = md5(serialize($routes));
+        if ($routesHash != get_option(static::$hashOption)) {
             \flush_rewrite_rules();
-            update_option(static::$hash_option, $routes_hash);
+            update_option(static::$hashOption, $routesHash);
         }
     }
 
@@ -123,10 +131,10 @@ class RouteService
      */
     public static function matchRequest(\WP $environment)
     {
-        $matched_route = static::getRouteByQueryVars($environment->query_vars);
+        $matchedRoute = static::getRouteByQueryVars($environment->query_vars);
 
-        if ($matched_route instanceof Route) {
-            static::$matched_route = $matched_route;
+        if ($matchedRoute instanceof Route) {
+            static::$matchedRoute = $matchedRoute;
         }
     }
 
@@ -144,22 +152,22 @@ class RouteService
             return null;
         }
 
-        $route_name = \urlencode($query_vars[static::$routeQueryVar]);
+        $routeName = \urlencode($query_vars[static::$routeQueryVar]);
 
-        if (! isset(static::$routes[$route_name])) {
+        if (! isset(static::$routes[$routeName])) {
             \http_response_code(404);
 
             return null;
         }
 
-        $requestMethods = static::$routes[$route_name]->getRequestMethods();
+        $requestMethods = static::$routes[$routeName]->getRequestMethods();
 
         if (! empty($requestMethods) && ! in_array($_SERVER['REQUEST_METHOD'], $requestMethods)) {
             \http_response_code(405);
             die;
         }
 
-        return static::$routes[$route_name];
+        return static::$routes[$routeName];
     }
 
     /**
@@ -248,7 +256,7 @@ class RouteService
      */
     public static function currentRoute(): ?Route
     {
-        return static::$matched_route;
+        return static::$matchedRoute;
     }
 
     /**
@@ -263,7 +271,7 @@ class RouteService
      */
     public static function isCurrentRoute(string $name): bool
     {
-        return is_a(static::$matched_route, Route::class) && static::$matched_route->getName() === $name;
+        return is_a(static::$matchedRoute, Route::class) && static::$matchedRoute->getName() === $name;
     }
 
     /**
@@ -272,11 +280,11 @@ class RouteService
      */
     public static function onTemplateRedirect()
     {
-        if (! static::$matched_route instanceof Route) {
+        if (! static::$matchedRoute instanceof Route) {
             return;
         }
 
-        static::$matched_route->call();
+        static::$matchedRoute->call();
         exit;
     }
 }
