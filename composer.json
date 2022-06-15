@@ -1,18 +1,33 @@
 {
-  "name": "morningtrain/wp-route",
-  "description": "A simple route service for WordPress",
-  "minimum-stability": "stable",
-  "license": "proprietary",
-  "version": "v0.1.0",
-  "authors": [
-    {
-      "name": "Morningtrain",
-      "email": "mh@morningtrain.dk"
+    "name": "morningtrain/wp-route",
+    "description": "A simple route service for WordPress",
+    "minimum-stability": "stable",
+    "license": "proprietary",
+    "version": "v0.1.0",
+    "authors": [
+        {
+            "name": "Morningtrain",
+            "email": "mh@morningtrain.dk"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Morningtrain\\WP\\Route\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.0",
+        "morningtrain/php-loader": "^0.3.0"
+    },
+    "repositories": {
+        "backuptrain.dk/9": {
+            "type": "composer",
+            "url": "https://backuptrain.dk/api/v4/group/9/-/packages/composer/packages.json"
+        }
+    },
+    "config": {
+        "gitlab-domains": [
+            "backuptrain.dk"
+        ]
     }
-  ],
-  "autoload": {
-    "psr-4": {
-      "Morningtrain\\WP\\Route\\": "src/"
-    }
-  }
 }
