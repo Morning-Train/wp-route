@@ -5,10 +5,8 @@ namespace Morningtrain\WP\Route;
 class Route
 {
     private ?string $name = null;
-    private string $path;
     private array $requestMethods = [];
     private string $position = 'top';
-    private $callback;
 
     private array $customParamRegexes = [];
     private string $defaultParamRegex = '([^/]+)';
@@ -20,11 +18,31 @@ class Route
      * @param  string  $path
      * @param  callable  $callback
      */
-    public function __construct(string $path, callable $callback)
-    {
-        $this->path = $path;
-        $this->callback = $callback;
+    public function __construct(
+        private string $path,
+        private $callback
+    ) {
         $this->extractPathParams();
+
+        return $this;
+    }
+
+    public function __destruct()
+    {
+        $this->save();
+    }
+
+    /**
+     * Update this route in Service and get  service ready
+     *
+     * @return $this
+     */
+    public function save(): static
+    {
+        RouteService::updateRoute($this);
+        RouteService::setup();
+
+        return $this;
     }
 
     private function extractPathParams()
@@ -98,13 +116,13 @@ class Route
     }
 
     /**
-     * Set the allowed Requst Methods
+     * Set the allowed Request Methods
      *
      * @param  array  $methods  Array of string such as "GET", "POST", "PUT" or "any"
      *
      * @return $this
      */
-    public function setRequestMethods(array $methods): Route
+    public function setRequestMethods(array $methods): static
     {
         if ($methods === ['any']) {
             $methods = [];
@@ -135,21 +153,25 @@ class Route
      *
      * @see https://developer.wordpress.org/reference/functions/add_rewrite_rule/
      */
-    public function setPosition(string $position): string
+    public function setPosition(string $position): static
     {
-        return $this->position = $position;
+        $this->position = $position;
+
+        return $this;
     }
 
     /**
      * Calls the route callback
      */
-    public function call()
+    public function call(): static
     {
         $callback = $this->getCallback();
         if (! is_callable($callback)) {
-            return;
+            return $this;
         }
         $callback(...array_values($this->getQueryVars()));
+
+        return $this;
     }
 
     /**
@@ -198,9 +220,14 @@ class Route
     public function name(string $name): self
     {
         $this->name = $name;
-        RouteService::updateRoute($this);
 
         return $this;
+    }
+
+    public static function loadDir(string|array $path)
+    {
+        \Morningtrain\PHPLoader\Loader::create($path);
+        RouteService::setup();
     }
 
     /**
@@ -214,6 +241,7 @@ class Route
     public static function match(array $requestMethods, string $path, callable $callback): Route
     {
         $route = new static($path, $callback);
+
         $route->setRequestMethods(
             $requestMethods
         ); // TODO: Filter these. But what to do if an invalid method is present? If removed with array_filter then array will be empty and any request type will pass through
@@ -318,7 +346,7 @@ class Route
      * Wrapper to allow access through this class
      *
      * @param  string  $name
-     * @return Route|null
+     * @return bool
      */
     public static function exists(string $name): bool
     {
@@ -330,11 +358,11 @@ class Route
      * Wrapper to allow access through this class
      *
      * @param  string  $name
-     * @param ?array  $args
+     * @param  array  $args
      *
      * @return string|null
      */
-    public static function route(string $name, $args = []): ?string
+    public static function route(string $name, array $args = []): ?string
     {
         return RouteService::getUrl($name, $args);
     }
@@ -343,6 +371,7 @@ class Route
      * Checks if a route is currently matched
      *
      * @param  string  $name
+     *
      * @return bool
      * @see RouteService::isCurrentRoute
      */
