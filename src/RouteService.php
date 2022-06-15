@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Morningtrain\WP\Route;
-
 
 class RouteService
 {
@@ -71,8 +69,8 @@ class RouteService
     /**
      * Adds the rewrite rule for a Route to WordPress
      *
-     * @param string $handle
-     * @param Route $route
+     * @param  string  $handle
+     * @param  Route  $route
      */
     public static function addRewriteRule(string $handle, Route $route)
     {
@@ -97,7 +95,7 @@ class RouteService
     /**
      * Generates the regex for the service
      *
-     * @param Route $route
+     * @param  Route  $route
      *
      * @return string
      */
@@ -121,7 +119,7 @@ class RouteService
     /**
      * Attempts to match the current request to a route.
      *
-     * @param \WP $environment
+     * @param  \WP  $environment
      */
     public static function matchRequest(\WP $environment)
     {
@@ -135,7 +133,7 @@ class RouteService
     /**
      * Tries to match query vars and http method to a route and return it
      *
-     * @param array $query_vars
+     * @param  array  $query_vars
      *
      * @return ?Route
      */
@@ -148,14 +146,15 @@ class RouteService
 
         $route_name = \urlencode($query_vars[static::$routeQueryVar]);
 
-        if (!isset(static::$routes[$route_name])) {
+        if (! isset(static::$routes[$route_name])) {
             \http_response_code(404);
+
             return null;
         }
 
         $requestMethods = static::$routes[$route_name]->getRequestMethods();
 
-        if (!empty($requestMethods) && !in_array($_SERVER['REQUEST_METHOD'], $requestMethods)) {
+        if (! empty($requestMethods) && ! in_array($_SERVER['REQUEST_METHOD'], $requestMethods)) {
             \http_response_code(405);
             die;
         }
@@ -167,7 +166,7 @@ class RouteService
      * Adds a Route to the service
      * Route wrappes this in Route::get etc.
      *
-     * @param Route $route
+     * @param  Route  $route
      */
     public static function addRoute(Route $route)
     {
@@ -177,13 +176,12 @@ class RouteService
     /**
      * Updates a route object by name or matching path AND methods
      *
-     * @param Route $route
+     * @param  Route  $route
      */
     public static function updateRoute(Route $route)
     {
         foreach (static::$routes as $k => $_route) {
-            if ($_route->getName() === $route->getName() || ($_route->getPath() === $route->getPath(
-                    ) && $_route->getRequestMethods() === $route->getRequestMethods())) {
+            if ($_route->getName() === $route->getName() || ($_route->getPath() === $route->getPath() && $_route->getRequestMethods() === $route->getRequestMethods())) {
                 // These routes match! And should be updated
                 static::$routes[$k] = $route;
             }
@@ -193,7 +191,7 @@ class RouteService
     /**
      * Gets a defined route by name
      *
-     * @param string $name
+     * @param  string  $name
      * @return Route|null
      */
     public static function getRoute(string $name): ?Route
@@ -211,7 +209,7 @@ class RouteService
      * Whether a named route exists or not
      * For internal use. Use Route::exists instead
      *
-     * @param string $name
+     * @param  string  $name
      * @return bool
      * @see Route::exists
      */
@@ -224,8 +222,8 @@ class RouteService
      * Returns the URL of a named route
      * For internal use. Use Route::route instead
      *
-     * @param string $name
-     * @param ?array $args
+     * @param  string  $name
+     * @param ?array  $args
      *
      * @return string|null
      * @see Route::route
@@ -234,11 +232,11 @@ class RouteService
     public static function getUrl(string $name, $args = []): ?string
     {
         $route = static::getRoute($name);
-        if (!$route) {
+        if (! $route) {
             return null;
         }
 
-        return trim(\home_url(),'/') . $route->getUrl($args);
+        return trim(\home_url(), '/') . $route->getUrl($args);
     }
 
     /**
@@ -257,7 +255,7 @@ class RouteService
      * Checks if a route is currently matched
      * For internal use. Use Route::is instead
      *
-     * @param string $name
+     * @param  string  $name
      *
      * @return bool
      * @see Route::is
@@ -274,7 +272,7 @@ class RouteService
      */
     public static function onTemplateRedirect()
     {
-        if (!static::$matched_route instanceof Route) {
+        if (! static::$matched_route instanceof Route) {
             return;
         }
 

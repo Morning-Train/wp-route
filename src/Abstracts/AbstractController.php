@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Morningtrain\WP\Route\Abstracts;
 
 /**

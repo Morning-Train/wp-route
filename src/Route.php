@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Morningtrain\WP\Route;
-
 
 class Route
 {
@@ -19,8 +17,8 @@ class Route
     /**
      * Route constructor.
      *
-     * @param string $path
-     * @param callable $callback
+     * @param  string  $path
+     * @param  callable  $callback
      */
     public function __construct(string $path, callable $callback)
     {
@@ -60,7 +58,7 @@ class Route
     /**
      * Returns the relative URL of a route
      *
-     * @param ?array $args the values of the route args, if any.
+     * @param ?array  $args  the values of the route args, if any.
      * Eg. For the route /user/{user_id} -> /user/12
      * $args would be ['user_id'=>12]
      *
@@ -102,7 +100,7 @@ class Route
     /**
      * Set the allowed Requst Methods
      *
-     * @param array $methods Array of string such as "GET", "POST", "PUT" or "any"
+     * @param  array  $methods  Array of string such as "GET", "POST", "PUT" or "any"
      *
      * @return $this
      */
@@ -131,7 +129,7 @@ class Route
     /**
      * Set the rewrite position
      *
-     * @param string $position
+     * @param  string  $position
      *
      * @return string
      *
@@ -148,7 +146,7 @@ class Route
     public function call()
     {
         $callback = $this->getCallback();
-        if (!is_callable($callback)) {
+        if (! is_callable($callback)) {
             return;
         }
         $callback(...array_values($this->getQueryVars()));
@@ -174,7 +172,7 @@ class Route
 
     public function getParamRegex(string $param)
     {
-        if (!key_exists($param, $this->customParamRegexes)) {
+        if (! key_exists($param, $this->customParamRegexes)) {
             return $this->defaultParamRegex;
         }
 
@@ -194,22 +192,22 @@ class Route
     /**
      * Sets the name of the route
      *
-     * @param string $name
+     * @param  string  $name
      * @return $this
      */
     public function name(string $name): self
     {
         $this->name = $name;
         RouteService::updateRoute($this);
+
         return $this;
     }
-
 
     /**
      * Register a Route that accepts any HTTP request method
      *
-     * @param string $path
-     * @param callable $callback
+     * @param  string  $path
+     * @param  callable  $callback
      *
      * @return Route
      */
@@ -220,14 +218,15 @@ class Route
             $requestMethods
         ); // TODO: Filter these. But what to do if an invalid method is present? If removed with array_filter then array will be empty and any request type will pass through
         RouteService::addRoute($route);
+
         return $route;
     }
 
     /**
      * Register a Route that accepts any HTTP request method
      *
-     * @param string $path
-     * @param callable $callback
+     * @param  string  $path
+     * @param  callable  $callback
      *
      * @return Route
      */
@@ -239,8 +238,8 @@ class Route
     /**
      * Register a HTTP GET request Route
      *
-     * @param string $path
-     * @param callable $callback
+     * @param  string  $path
+     * @param  callable  $callback
      *
      * @return Route
      */
@@ -252,8 +251,8 @@ class Route
     /**
      * Register a HTTP POST request Route
      *
-     * @param string $path
-     * @param callable $callback
+     * @param  string  $path
+     * @param  callable  $callback
      *
      * @return Route
      */
@@ -265,8 +264,8 @@ class Route
     /**
      * Register a HTTP PUT request Route
      *
-     * @param string $path
-     * @param callable $callback
+     * @param  string  $path
+     * @param  callable  $callback
      *
      * @return Route
      */
@@ -278,8 +277,8 @@ class Route
     /**
      * Register a HTTP PATCH request Route
      *
-     * @param string $path
-     * @param callable $callback
+     * @param  string  $path
+     * @param  callable  $callback
      *
      * @return Route
      */
@@ -291,8 +290,8 @@ class Route
     /**
      * Register a HTTP DELETE request Route
      *
-     * @param string $path
-     * @param callable $callback
+     * @param  string  $path
+     * @param  callable  $callback
      *
      * @return Route
      */
@@ -304,8 +303,8 @@ class Route
     /**
      * Register a HTTP OPTIONS request Route
      *
-     * @param string $path
-     * @param callable $callback
+     * @param  string  $path
+     * @param  callable  $callback
      *
      * @return Route
      */
@@ -318,7 +317,7 @@ class Route
      * Gets a defined route by name
      * Wrapper to allow access through this class
      *
-     * @param string $name
+     * @param  string  $name
      * @return Route|null
      */
     public static function exists(string $name): bool
@@ -330,8 +329,8 @@ class Route
      * Returns the URL of a named route
      * Wrapper to allow access through this class
      *
-     * @param string $name
-     * @param ?array $args
+     * @param  string  $name
+     * @param ?array  $args
      *
      * @return string|null
      */
@@ -343,7 +342,7 @@ class Route
     /**
      * Checks if a route is currently matched
      *
-     * @param string $name
+     * @param  string  $name
      * @return bool
      * @see RouteService::isCurrentRoute
      */
