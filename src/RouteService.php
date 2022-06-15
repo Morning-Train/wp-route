@@ -172,7 +172,7 @@ class RouteService
 
     /**
      * Adds a Route to the service
-     * Route wrappes this in Route::get etc.
+     * Route wraps this in Route::get etc.
      *
      * @param  Route  $route
      */
