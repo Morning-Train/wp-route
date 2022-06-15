@@ -15,6 +15,18 @@
             "Morningtrain\\WP\\Route\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Morningtrain\\WP\\Route\\Tests\\Unit\\": "tests/Unit",
+            "Morningtrain\\WP\\Route\\Tests\\Feature\\": "tests/Feature"
+        }
+    },
+    "repositories": {
+        "backuptrain.dk/9": {
+            "type": "composer",
+            "url": "https://backuptrain.dk/api/v4/group/9/-/packages/composer/packages.json"
+        }
+    },
     "require": {
         "php": "^8.0",
         "morningtrain/php-loader": "^0.3.0"
@@ -26,12 +38,6 @@
     "scripts": {
         "test": "vendor/bin/pest",
         "test-coverage": "vendor/bin/pest --coverage"
-    },
-    "repositories": {
-        "backuptrain.dk/9": {
-            "type": "composer",
-            "url": "https://backuptrain.dk/api/v4/group/9/-/packages/composer/packages.json"
-        }
     },
     "config": {
         "gitlab-domains": [
