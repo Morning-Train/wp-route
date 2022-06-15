@@ -6,7 +6,7 @@ class Route
 {
     private ?string $name = null;
     private string $path;
-    private array $request_methods = [];
+    private array $requestMethods = [];
     private string $position = 'top';
     private $callback;
 
@@ -94,7 +94,7 @@ class Route
      */
     public function getRequestMethods(): array
     {
-        return $this->request_methods;
+        return $this->requestMethods;
     }
 
     /**
@@ -110,7 +110,7 @@ class Route
             $methods = [];
         }
 
-        $this->request_methods = $methods;
+        $this->requestMethods = $methods;
 
         return $this;
     }
@@ -135,7 +135,7 @@ class Route
      *
      * @see https://developer.wordpress.org/reference/functions/add_rewrite_rule/
      */
-    public function setPosition(string $position)
+    public function setPosition(string $position): string
     {
         return $this->position = $position;
     }
