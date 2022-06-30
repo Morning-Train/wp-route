@@ -1,10 +1,13 @@
 # Morningtrain\WP\Route
 
-[![Latest Release](https://backuptrain.dk/internal-projects/wp/wp-route/-/badges/release.svg)](https://backuptrain.dk/internal-projects/wp/wp-route/-/releases)
-[![pipeline status](https://backuptrain.dk/internal-projects/wp/wp-route/badges/master/pipeline.svg)](https://backuptrain.dk/internal-projects/wp/wp-route/-/pipelines)
-[![coverage status](https://backuptrain.dk/internal-projects/wp/wp-route/badges/master/coverage.svg)](https://backuptrain.dk/internal-projects/wp/wp-route/-/graphs/master/charts)
-
 A Route Service for WordPress that uses the WordPress rewrite engine and adds Laravel syntax to it.
+
+
+## Installation
+
+```bash
+composer require morningtrain/wp-route
+```
 
 ## Route
 A Route is an address or endpoint in the application. 
