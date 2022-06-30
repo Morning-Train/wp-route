@@ -2,7 +2,7 @@
     "name": "morningtrain/wp-route",
     "description": "A simple route service for WordPress",
     "minimum-stability": "stable",
-    "license": "proprietary",
+    "license": "MIT",
     "authors": [
         {
             "name": "Morningtrain",
