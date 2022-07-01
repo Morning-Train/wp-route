@@ -1,9 +1,13 @@
 {
     "name": "morningtrain/wp-route",
     "description": "A simple route service for WordPress",
+    "keywords": [
+        "wordpress",
+        "morningtrain",
+        "route"
+    ],
     "minimum-stability": "stable",
-    "license": "proprietary",
-    "version": "v0.3.0",
+    "license": "MIT",
     "authors": [
         {
             "name": "Morningtrain",
@@ -21,12 +25,6 @@
             "Morningtrain\\WP\\Route\\Tests\\Feature\\": "tests/Feature"
         }
     },
-    "repositories": {
-        "backuptrain.dk/9": {
-            "type": "composer",
-            "url": "https://backuptrain.dk/api/v4/group/9/-/packages/composer/packages.json"
-        }
-    },
     "require": {
         "php": "^8.0",
         "morningtrain/php-loader": "^0.3.0"
@@ -40,9 +38,6 @@
         "test-coverage": "vendor/bin/pest --coverage"
     },
     "config": {
-        "gitlab-domains": [
-            "backuptrain.dk"
-        ],
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true
