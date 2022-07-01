@@ -1,14 +1,27 @@
-# Morningtrain\WP\Route
-
-[![Latest Release](https://backuptrain.dk/internal-projects/wp/wp-route/-/badges/release.svg)](https://backuptrain.dk/internal-projects/wp/wp-route/-/releases)
-[![pipeline status](https://backuptrain.dk/internal-projects/wp/wp-route/badges/master/pipeline.svg)](https://backuptrain.dk/internal-projects/wp/wp-route/-/pipelines)
-[![coverage status](https://backuptrain.dk/internal-projects/wp/wp-route/badges/master/coverage.svg)](https://backuptrain.dk/internal-projects/wp/wp-route/-/graphs/master/charts)
+# WP Route
 
 A Route Service for WordPress that uses the WordPress rewrite engine and adds Laravel syntax to it.
 
-## Route
-A Route is an address or endpoint in the application. 
-Routes are defined in the `/routes` directory of your project, unless otherwise specified.
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Getting Started](#getting-started)
+    - [Installation](#installation)
+- [Dependencies](#dependencies)
+    - [morningtrain/php-loader](#morningtrainphp-loader)
+- [Usage](#usage)
+    - [Adding a route](#adding-a-route)
+    - [A route with arguments](#a-route-with-arguments)
+    - [Using named routes](#using-named-routes)
+- [Credits](#credits)
+- [Testing](#testing)
+- [License](#license)
+-
+
+## Introduction
+
+A Route is an address or endpoint in the application. Routes are defined in the `/routes` directory of your project,
+unless otherwise specified.
 
 All files in this directory are loaded by the framework while it is booting up.
 
@@ -16,7 +29,29 @@ Note that the Route API imitates [Laravel Route](https://laravel.com/docs/routin
 
 Routes MUST call a Controller as callback!
 
-### A simple route
+## Getting Started
+
+To get started install the package as described below in [Installation](#installation).
+
+To use the tool have a look at [Usage](#usage)
+
+### Installation
+
+Install with composer
+
+```bash
+composer require morningtrain/wp-route
+```
+
+## Dependencies
+
+### morningtrain/php-loader
+
+[PHP Loader](https://github.com/Morning-Train/php-loader) is used to load and initialize all Hooks
+
+## Usage
+
+### Adding a route
 
 ```php
 // /routes/myroute.php
@@ -79,13 +114,18 @@ $url = \Morningtrain\WP\Route\RouteService::getUrl('kittens',['kitten_id' => 1])
 $bool = \Morningtrain\WP\Route\RouteService::isCurrentRoute('kitten');
 ```
 
-## A quick note on Controllers
-Controllers should be placed in /Controllers.
-A Controllers methods should follow CRUD.
-This means that there should exist at most 4 methods in a Controller.
 
-If you need multiple getters or setters in a single Controller then consider having more Controllers.
-Just like a proper REST API endpoint can't have multiple different POST methods for the same endpoint.
-Read more: [Laravel Resource Controllers](https://laravel.com/docs/8.x/controllers#resource-controllers)
+## Credits
 
-In a controllers method you MUST validate the request, its data, the user and where applicable the referer.
+- [Mathias Munk](https://github.com/mrmoeg)
+- [All Contributors](../../contributors)
+
+## Testing
+
+```bash
+composer test
+```
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE) for more information.
