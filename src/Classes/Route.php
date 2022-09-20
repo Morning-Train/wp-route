@@ -16,7 +16,7 @@ class Route
      * Route constructor.
      *
      * @param  string  $path
-     * @param  callable  $callback
+     * @param  callable|string  $callback
      */
     public function __construct(
         private string $path,
@@ -161,11 +161,12 @@ class Route
      */
     public function call(): static
     {
-        $callback = $this->getCallback();
-        if (! is_callable($callback)) {
-            return $this;
+        // If callback is a string and a class, then it must be for invoking
+        $callback = $this->callback;
+        if(is_string($this->callback) && class_exists($this->callback)){
+            $callback = new $this->callback();
         }
-        $callback(...array_values($this->getQueryVars()));
+        ($callback)(...array_values($this->getQueryVars()));
 
         return $this;
     }

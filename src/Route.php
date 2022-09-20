@@ -17,12 +17,12 @@ class Route
     /**
      * Register a Route that accepts any HTTP request method
      *
-     * @param  string  $path
-     * @param  callable  $callback
+     * @param  string  $path  The route path
+     * @param  callable|string  $callback  The callback for when the route triggers. If a string is provided an invokable class is assumed
      *
      * @return ?RouteInstance
      */
-    public static function match(array $requestMethods, string $path, callable $callback): ?RouteInstance
+    public static function match(array $requestMethods, string $path, callable|string $callback): ?RouteInstance
     {
         $route = new RouteInstance(ltrim($path, '/'), $callback);
 
@@ -48,11 +48,11 @@ class Route
      * Register a Route that accepts any HTTP request method
      *
      * @param  string  $path
-     * @param  callable  $callback
+     * @param  callable|string  $callback  Function or invokable class
      *
      * @return RouteInstance
      */
-    public static function any(string $path, callable $callback): RouteInstance
+    public static function any(string $path, callable|string $callback): RouteInstance
     {
         return static::match([], $path, $callback);
     }
@@ -61,11 +61,11 @@ class Route
      * Register a HTTP GET request Route
      *
      * @param  string  $path
-     * @param  callable  $callback
+     * @param  callable|string  $callback  Function or invokable class
      *
      * @return RouteInstance
      */
-    public static function get(string $path, callable $callback): RouteInstance
+    public static function get(string $path, callable|string $callback): RouteInstance
     {
         return static::match(['GET'], $path, $callback);
     }
@@ -74,11 +74,11 @@ class Route
      * Register a HTTP POST request Route
      *
      * @param  string  $path
-     * @param  callable  $callback
+     * @param  callable|string  $callback  Function or invokable class
      *
      * @return RouteInstance
      */
-    public static function post(string $path, callable $callback): RouteInstance
+    public static function post(string $path, callable|string $callback): RouteInstance
     {
         return static::match(['POST'], $path, $callback);
     }
@@ -87,11 +87,11 @@ class Route
      * Register a HTTP PUT request Route
      *
      * @param  string  $path
-     * @param  callable  $callback
+     * @param  callable|string  $callback  Function or invokable class
      *
      * @return RouteInstance
      */
-    public static function put(string $path, callable $callback): RouteInstance
+    public static function put(string $path, callable|string $callback): RouteInstance
     {
         return static::match(['PUT'], $path, $callback);
     }
@@ -100,11 +100,11 @@ class Route
      * Register a HTTP PATCH request Route
      *
      * @param  string  $path
-     * @param  callable  $callback
+     * @param  callable|string  $callback  Function or invokable class
      *
      * @return RouteInstance
      */
-    public static function patch(string $path, callable $callback): RouteInstance
+    public static function patch(string $path, callable|string $callback): RouteInstance
     {
         return static::match(['PATCH'], $path, $callback);
     }
@@ -113,11 +113,11 @@ class Route
      * Register a HTTP DELETE request Route
      *
      * @param  string  $path
-     * @param  callable  $callback
+     * @param  callable|string  $callback  Function or invokable class
      *
      * @return RouteInstance
      */
-    public static function delete(string $path, callable $callback): RouteInstance
+    public static function delete(string $path, callable|string $callback): RouteInstance
     {
         return static::match(['DELETE'], $path, $callback);
     }
@@ -126,11 +126,11 @@ class Route
      * Register a HTTP OPTIONS request Route
      *
      * @param  string  $path
-     * @param  callable  $callback
+     * @param  callable|string  $callback  Function or invokable class
      *
      * @return RouteInstance
      */
-    public static function options(string $path, callable $callback): RouteInstance
+    public static function options(string $path, callable|string $callback): RouteInstance
     {
         return static::match(['OPTIONS'], $path, $callback);
     }
@@ -140,9 +140,9 @@ class Route
      * Wrapper to allow access through this class
      *
      * @param  string  $name
-     * @return RouteInstance
+     * @return bool
      */
-    public static function exists(string $name): RouteInstance
+    public static function exists(string $name): bool
     {
         return RouteService::exists($name);
     }
