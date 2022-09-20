@@ -4,5 +4,6 @@ auth.json
 /.idea
 /coverage
 .phpunit.result.cache
+composer.lock
 
 phpunit-report.xml
