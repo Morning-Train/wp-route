@@ -20,15 +20,25 @@ class Route
      * @param  string  $path
      * @param  callable  $callback
      *
-     * @return RouteInstance
+     * @return ?RouteInstance
      */
-    public static function match(array $requestMethods, string $path, callable $callback): RouteInstance
+    public static function match(array $requestMethods, string $path, callable $callback): ?RouteInstance
     {
-        $route = new RouteInstance($path, $callback);
+        $route = new RouteInstance(ltrim($path, '/'), $callback);
+
+        // Remove methods that we either don't recognize or allow
+        $requestMethods = array_filter($requestMethods,
+            fn($method) => in_array(strtoupper($method), RouteService::getAllowedRequestMethods()));
+
+        // You gotta have at least one request method! If you allow any method, then use ['any']
+        if (empty($requestMethods)) {
+            return null;
+        }
 
         $route->setRequestMethods(
             $requestMethods
         );
+
         RouteService::addRoute($route);
 
         return $route;

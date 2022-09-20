@@ -26,6 +26,17 @@ class RouteService
 
     private static bool $actionsHasBeenAdded = false;
 
+    private static array $allowedRequestMethods = [
+        'GET',
+        'POST',
+        'PUT',
+        'PATCH',
+        'DELETE',
+        'OPTIONS',
+    ];
+
+    private static bool $is404 = false;
+
     /**
      * Sets up actions for the route service to function
      */
@@ -50,8 +61,8 @@ class RouteService
     {
         $routes = static::$routes;
         static::addMainRewriteTag();
-        foreach ($routes as $name => $route) {
-            static::addRewriteRule($name, $route);
+        foreach ($routes as $route) {
+            static::addRewriteRule(\urlencode($route->getPath()), $route);
         }
 
         $routesHash = md5(serialize($routes));
@@ -139,6 +150,17 @@ class RouteService
     }
 
     /**
+     * Get a list of allowed HTTP Request Methods
+     * Note: These are all uppercase
+     *
+     * @return array|string[]
+     */
+    public static function getAllowedRequestMethods(): array
+    {
+        return static::$allowedRequestMethods;
+    }
+
+    /**
      * Tries to match query vars and http method to a route and return it
      *
      * @param  array  $query_vars
@@ -152,22 +174,15 @@ class RouteService
             return null;
         }
 
-        $routeName = \urlencode($query_vars[static::$routeQueryVar]);
+        $route = static::getRoute(\urlencode($query_vars[static::$routeQueryVar]), $_SERVER['REQUEST_METHOD']);
 
-        if (! isset(static::$routes[$routeName])) {
-            \http_response_code(404);
+        if (empty($route)) {
+            static::$is404 = true;
 
             return null;
         }
 
-        $requestMethods = static::$routes[$routeName]->getRequestMethods();
-
-        if (! empty($requestMethods) && ! in_array($_SERVER['REQUEST_METHOD'], $requestMethods)) {
-            \http_response_code(405);
-            die;
-        }
-
-        return static::$routes[$routeName];
+        return $route;
     }
 
     /**
@@ -178,7 +193,7 @@ class RouteService
      */
     public static function addRoute(Route $route)
     {
-        static::$routes[urlencode($route->getPath())] = $route;
+        static::$routes[] = $route;
     }
 
     /**
@@ -189,11 +204,30 @@ class RouteService
     public static function updateRoute(Route $route)
     {
         foreach (static::$routes as $k => $_route) {
-            if ($_route->getName() === $route->getName() || ($_route->getPath() === $route->getPath() && $_route->getRequestMethods() === $route->getRequestMethods())) {
+            if ($_route->getName() === $route->getName() && $_route->getRequestMethods() === $route->getRequestMethods()) {
                 // These routes match! And should be updated
                 static::$routes[$k] = $route;
             }
         }
+    }
+
+    /**
+     * Gets a defined route by path
+     *
+     * @param  string  $path
+     * @return Route|null
+     */
+    public static function getRoute(string $path, ?string $requestMethod = null): ?Route
+    {
+        foreach (static::$routes as $route) {
+            if (\urlencode($route->getPath()) === $path) {
+                if ($requestMethod === null || in_array($requestMethod, $route->getRequestMethods())) {
+                    return $route;
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -202,7 +236,7 @@ class RouteService
      * @param  string  $name
      * @return Route|null
      */
-    public static function getRoute(string $name): ?Route
+    public static function getRouteByName(string $name)
     {
         foreach (static::$routes as $route) {
             if ($route->getName() === $name) {
@@ -223,7 +257,7 @@ class RouteService
      */
     public static function exists(string $name): bool
     {
-        return is_a(static::getRoute($name), Route::class);
+        return is_a(static::getRouteByName($name), Route::class);
     }
 
     /**
@@ -239,7 +273,7 @@ class RouteService
      */
     public static function getUrl(string $name, $args = []): ?string
     {
-        $route = static::getRoute($name);
+        $route = static::getRouteByName($name);
         if (! $route) {
             return null;
         }
@@ -281,6 +315,13 @@ class RouteService
     public static function onTemplateRedirect()
     {
         if (! static::$matchedRoute instanceof Route) {
+            if (static::$is404) {
+                global $wp_query;
+                $wp_query->set_404();
+                \status_header(404);
+                \get_template_part(404);
+            }
+
             return;
         }
 

@@ -23,13 +23,9 @@ class Route
         private $callback
     ) {
         $this->extractPathParams();
+        $this->name = \urlencode($path);
 
         return $this;
-    }
-
-    public function __destruct()
-    {
-        $this->save();
     }
 
     /**
@@ -128,7 +124,7 @@ class Route
             $methods = [];
         }
 
-        $this->requestMethods = $methods;
+        $this->requestMethods = array_map('strtoupper', $methods);
 
         return $this;
     }
@@ -220,6 +216,7 @@ class Route
     public function name(string $name): self
     {
         $this->name = $name;
+        $this->save();
 
         return $this;
     }
