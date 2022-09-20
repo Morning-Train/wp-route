@@ -1,6 +1,6 @@
 <?php
 
-namespace Morningtrain\WP\Route;
+namespace Morningtrain\WP\Route\Classes;
 
 class RouteService
 {
