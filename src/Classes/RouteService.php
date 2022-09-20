@@ -27,6 +27,7 @@ class RouteService
     private static bool $actionsHasBeenAdded = false;
 
     private static array $allowedRequestMethods = [
+        'ANY', // This one is special <3
         'GET',
         'POST',
         'PUT',
@@ -70,6 +71,15 @@ class RouteService
             \flush_rewrite_rules();
             update_option(static::$hashOption, $routesHash);
         }
+    }
+
+    /**
+     * DANGEROUS!!
+     * Only use in testing
+     */
+    public static function __forgetAllRoutes()
+    {
+        static::$routes = [];
     }
 
     /**
@@ -204,7 +214,7 @@ class RouteService
     public static function updateRoute(Route $route)
     {
         foreach (static::$routes as $k => $_route) {
-            if ($_route->getName() === $route->getName() && $_route->getRequestMethods() === $route->getRequestMethods()) {
+            if ($_route->getName() === $route->getName() || ($_route->getPath() === $route->getPath() && $_route->getRequestMethods() === $route->getRequestMethods())) {
                 // These routes match! And should be updated
                 static::$routes[$k] = $route;
             }

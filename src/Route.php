@@ -50,11 +50,11 @@ class Route
      * @param  string  $path
      * @param  callable|string  $callback  Function or invokable class
      *
-     * @return RouteInstance
+     * @return ?RouteInstance
      */
-    public static function any(string $path, callable|string $callback): RouteInstance
+    public static function any(string $path, callable|string $callback): ?RouteInstance
     {
-        return static::match([], $path, $callback);
+        return static::match(['any'], $path, $callback);
     }
 
     /**
@@ -63,9 +63,9 @@ class Route
      * @param  string  $path
      * @param  callable|string  $callback  Function or invokable class
      *
-     * @return RouteInstance
+     * @return ?RouteInstance
      */
-    public static function get(string $path, callable|string $callback): RouteInstance
+    public static function get(string $path, callable|string $callback): ?RouteInstance
     {
         return static::match(['GET'], $path, $callback);
     }
@@ -76,9 +76,9 @@ class Route
      * @param  string  $path
      * @param  callable|string  $callback  Function or invokable class
      *
-     * @return RouteInstance
+     * @return ?RouteInstance
      */
-    public static function post(string $path, callable|string $callback): RouteInstance
+    public static function post(string $path, callable|string $callback): ?RouteInstance
     {
         return static::match(['POST'], $path, $callback);
     }
@@ -89,9 +89,9 @@ class Route
      * @param  string  $path
      * @param  callable|string  $callback  Function or invokable class
      *
-     * @return RouteInstance
+     * @return ?RouteInstance
      */
-    public static function put(string $path, callable|string $callback): RouteInstance
+    public static function put(string $path, callable|string $callback): ?RouteInstance
     {
         return static::match(['PUT'], $path, $callback);
     }
@@ -102,9 +102,9 @@ class Route
      * @param  string  $path
      * @param  callable|string  $callback  Function or invokable class
      *
-     * @return RouteInstance
+     * @return ?RouteInstance
      */
-    public static function patch(string $path, callable|string $callback): RouteInstance
+    public static function patch(string $path, callable|string $callback): ?RouteInstance
     {
         return static::match(['PATCH'], $path, $callback);
     }
@@ -115,9 +115,9 @@ class Route
      * @param  string  $path
      * @param  callable|string  $callback  Function or invokable class
      *
-     * @return RouteInstance
+     * @return ?RouteInstance
      */
-    public static function delete(string $path, callable|string $callback): RouteInstance
+    public static function delete(string $path, callable|string $callback): ?RouteInstance
     {
         return static::match(['DELETE'], $path, $callback);
     }
@@ -128,9 +128,9 @@ class Route
      * @param  string  $path
      * @param  callable|string  $callback  Function or invokable class
      *
-     * @return RouteInstance
+     * @return ?RouteInstance
      */
-    public static function options(string $path, callable|string $callback): RouteInstance
+    public static function options(string $path, callable|string $callback): ?RouteInstance
     {
         return static::match(['OPTIONS'], $path, $callback);
     }

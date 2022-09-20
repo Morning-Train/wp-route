@@ -23,7 +23,6 @@ class Route
         private $callback
     ) {
         $this->extractPathParams();
-        $this->name = \urlencode($path);
 
         return $this;
     }
@@ -93,9 +92,9 @@ class Route
     /**
      * Get the callback
      *
-     * @return callable
+     * @return callable|string
      */
-    public function getCallback(): callable
+    public function getCallback(): callable|string
     {
         return $this->callback;
     }
@@ -149,7 +148,7 @@ class Route
      *
      * @see https://developer.wordpress.org/reference/functions/add_rewrite_rule/
      */
-    public function setPosition(string $position): static
+    public function position(string $position): static
     {
         $this->position = $position;
 
@@ -162,9 +161,9 @@ class Route
     public function call(): static
     {
         // If callback is a string and a class, then it must be for invoking
-        $callback = $this->callback;
-        if(is_string($this->callback) && class_exists($this->callback)){
-            $callback = new $this->callback();
+        $callback = $this->getCallback();
+        if(is_string($callback) && class_exists($callback)){
+            $callback = new $callback();
         }
         ($callback)(...array_values($this->getQueryVars()));
 
