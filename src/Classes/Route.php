@@ -12,6 +12,8 @@ class Route
     private string $defaultParamRegex = '([^/]+)';
     private array $params = [];
 
+    private ?Group $group = null;
+
     /**
      * Route constructor.
      *
@@ -23,6 +25,8 @@ class Route
         private $callback
     ) {
         $this->extractPathParams();
+
+        $this->group = Group::getCurrentGroup();
 
         return $this;
     }
@@ -162,7 +166,7 @@ class Route
     {
         // If callback is a string and a class, then it must be for invoking
         $callback = $this->getCallback();
-        if(is_string($callback) && class_exists($callback)){
+        if (is_string($callback) && class_exists($callback)) {
             $callback = new $callback();
         }
         ($callback)(...array_values($this->getQueryVars()));
@@ -219,5 +223,15 @@ class Route
         $this->save();
 
         return $this;
+    }
+
+    public function getGroup(): ?Group
+    {
+        return $this->group;
+    }
+
+    public function applyMiddleware(): void
+    {
+        $this->getGroup()?->applyMiddlewares($this);
     }
 }

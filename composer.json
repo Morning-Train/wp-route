@@ -27,7 +27,8 @@
     },
     "require": {
         "php": "^8.0",
-        "morningtrain/php-loader": "^0.3.0"
+        "morningtrain/php-loader": "^0.3.0",
+        "illuminate/pipeline": "^8|^9"
     },
     "require-dev": {
         "pestphp/pest": "^1.21",
