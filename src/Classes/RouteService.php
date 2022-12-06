@@ -68,7 +68,7 @@ class RouteService
             static::addRewriteRule(\urlencode($route->getPath()), $route);
         }
 
-        $routesHash = md5(json_encode($routes));
+        $routesHash = md5(serialize($routes));
         if ($routesHash != get_option(static::$hashOption)) {
             \flush_rewrite_rules();
             update_option(static::$hashOption, $routesHash);
@@ -154,6 +154,7 @@ class RouteService
      */
     public static function matchRequest(\WP $environment)
     {
+        error_log(print_r($environment, true)); // TODO: Delete Error Log
         $matchedRoute = static::getRouteByQueryVars($environment->query_vars);
 
         if ($matchedRoute instanceof Route) {

@@ -240,4 +240,9 @@ class Route
 
         return $this;
     }
+
+    public function __serialize(): array
+    {
+        return [$this->getName(), $this->getPath(), $this->getPosition()];
+    }
 }
