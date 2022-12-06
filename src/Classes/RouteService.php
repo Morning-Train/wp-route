@@ -154,7 +154,6 @@ class RouteService
      */
     public static function matchRequest(\WP $environment)
     {
-        error_log(print_r($environment, true)); // TODO: Delete Error Log
         $matchedRoute = static::getRouteByQueryVars($environment->query_vars);
 
         if ($matchedRoute instanceof Route) {
