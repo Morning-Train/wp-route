@@ -2,6 +2,8 @@
 
 namespace Morningtrain\WP\Route\Classes;
 
+use Symfony\Component\HttpFoundation\Request;
+
 class Route
 {
     private ?string $name = null;
@@ -69,7 +71,9 @@ class Route
      */
     public function getPath(): string
     {
-        return $this->path;
+        $prefix = (string) $this->group?->getPrefix();
+
+        return ! empty($prefix) ? implode('/', [$prefix, $this->path]) : $this->path;
     }
 
     /**
@@ -230,8 +234,10 @@ class Route
         return $this->group;
     }
 
-    public function applyMiddleware(): void
+    public function applyMiddleware(Request $request): self
     {
-        $this->getGroup()?->applyMiddlewares($this);
+        $this->getGroup()?->applyMiddleware($request);
+
+        return $this;
     }
 }

@@ -4,6 +4,7 @@ namespace Morningtrain\WP\Route\Classes;
 
 use Illuminate\Container\Container;
 use Illuminate\Pipeline\Pipeline;
+use Symfony\Component\HttpFoundation\Request;
 
 class Group
 {
@@ -43,33 +44,32 @@ class Group
         return $this;
     }
 
-    public function getMiddlewares(): array
+    public function getMiddleware(): array
     {
-        return array_filter(array_merge((array) $this->group?->getMiddlewares(), $this->middlewares));
+        return array_filter(array_merge((array) $this->group?->getMiddleware(), $this->middlewares));
     }
 
-    public function applyMiddlewares(Route $route): void
+    public function applyMiddleware(Request $request): void
     {
-        $middlewares = $this->getMiddlewares();
-
         (new Pipeline())
-            ->send($route)
-            ->through($middlewares)
-            ->then(function ($route) {
-                $this->afterMiddleware($route);
+            ->send($request)
+            ->through($this->getMiddleware())
+            ->then(function ($request) {
+                $this->afterMiddleware($request);
             });
     }
 
-    public function afterMiddleware(Route $route)
+    public function afterMiddleware(Request $request)
     {
 
         // return $route;
     }
 
-    public function group(\Closure $routes): void
+    public function group(\Closure $routes): static
     {
         $routes();
         static::$currentGroup = $this->group; // Reset
-        // Do the middleware stuff here
+
+        return $this;
     }
 }

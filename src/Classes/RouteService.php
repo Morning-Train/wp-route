@@ -2,6 +2,8 @@
 
 namespace Morningtrain\WP\Route\Classes;
 
+use Symfony\Component\HttpFoundation\Request;
+
 class RouteService
 {
     /** Contains all registered routes
@@ -66,7 +68,7 @@ class RouteService
             static::addRewriteRule(\urlencode($route->getPath()), $route);
         }
 
-        $routesHash = md5(serialize($routes));
+        $routesHash = md5(json_encode($routes));
         if ($routesHash != get_option(static::$hashOption)) {
             \flush_rewrite_rules();
             update_option(static::$hashOption, $routesHash);
@@ -335,7 +337,9 @@ class RouteService
             return;
         }
 
-        static::$matchedRoute->call();
+        $request = Request::createFromGlobals();
+
+        static::$matchedRoute->applyMiddleware($request)->call();
         exit;
     }
 }
