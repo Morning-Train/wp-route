@@ -10,7 +10,7 @@ class Group
 {
     private static ?self $currentGroup = null;
 
-    private array $middlewares = [];
+    private array $middleware = [];
     private string $prefix = '';
     private ?self $group = null;
 
@@ -37,16 +37,30 @@ class Group
         return implode('/', array_filter([$this->group?->getPrefix(), $this->prefix]));
     }
 
-    public function addMiddleware(callable $middleware): static
+    public function middleware(array|callable|string $middleware): static
     {
-        $this->middlewares[] = $middleware;
+        // If the middleware is callable then add it
+        if (is_callable($middleware)) {
+            $this->middleware[] = $middleware;
+        } else {
+            // If not then make sure it is an array
+            $middleware = (array) $middleware;
+            foreach ($middleware as $k => $m) {
+                // If an item is NOT callable then we assume it is a string and is registered in the Middleware class - so we set that as callback
+                if (! is_callable($m)) {
+                    $middleware[$k] = [Middleware::class, $m];
+                }
+            }
+            // Add the list of middleware
+            $this->middleware = array_merge($this->middleware, $middleware);
+        }
 
         return $this;
     }
 
     public function getMiddleware(): array
     {
-        return array_filter(array_merge((array) $this->group?->getMiddleware(), $this->middlewares));
+        return array_filter(array_merge((array) $this->group?->getMiddleware(), $this->middleware));
     }
 
     public function applyMiddleware(Request $request): void

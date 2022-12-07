@@ -195,7 +195,7 @@ class Route
         }
         if (! empty($atts['middleware'])) {
             foreach ($atts['middleware'] as $middleware) {
-                $group->addMiddleware($middleware);
+                $group->middleware($middleware);
             }
         }
         $group->group($routes);
@@ -206,8 +206,8 @@ class Route
         return (new Group())->prefix($prefix);
     }
 
-    public static function middleware(Closure $middleware): Group
+    public static function middleware(array|callable|string $middleware): Group
     {
-        return (new Group())->addMiddleware($middleware);
+        return (new Group())->middleware($middleware);
     }
 }
