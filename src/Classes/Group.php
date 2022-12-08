@@ -5,6 +5,7 @@ namespace Morningtrain\WP\Route\Classes;
 use Illuminate\Container\Container;
 use Illuminate\Pipeline\Pipeline;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class Group
 {
@@ -65,18 +66,42 @@ class Group
 
     public function applyMiddleware(Request $request): void
     {
-        (new Pipeline())
-            ->send($request)
-            ->through($this->getMiddleware())
-            ->then(function ($request) {
-                $this->afterMiddleware($request);
-            });
+        try {
+            $response = (new Pipeline())
+                ->send($request)
+                ->through($this->getMiddleware())
+                ->thenReturn();
+
+            if (! is_a($response, Response::class)) {
+                if (is_string($response)) {
+                    $response = new Response($response);
+                } else {
+                    $response = new Response();
+                }
+            }
+        } catch (\Exception $exception) {
+            $response = new Response($exception->getMessage(), 500);
+        }
+
+        $this->afterMiddleware($response);
     }
 
-    public function afterMiddleware(Request $request)
+    public function afterMiddleware(Response $response)
     {
-
-        // return $route;
+        switch ($response->getStatusCode()) {
+            case 404:
+                global $wp_query;
+                $wp_query->set_404();
+                \status_header(404);
+                // TODO: Gotta figure how this works now. It's changed!! ಥ_ಥ
+                \get_template_part(404);
+                \block_template_part('404');
+                break;
+            case 500:
+                echo "<p>Uh oh! An exception was thrown</p>";
+                echo "<p><strong>{$response->getContent()}</strong></p>";
+                break;
+        }
     }
 
     public function group(\Closure $routes): static
