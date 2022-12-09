@@ -339,7 +339,7 @@ class RouteService
 
         $request = Request::createFromGlobals();
 
-        static::$matchedRoute->applyMiddleware($request)->call();
+        static::$matchedRoute->handleMiddleware($request)->call();
         exit;
     }
 }

@@ -8,12 +8,24 @@ class Middleware
 {
     private static array $middleware = [];
 
-    public static function addMiddleware(string $name, callable $callable)
+    /**
+     * Add a global middleware
+     *
+     * @param  string  $name  The name to refer to this middleware by
+     * @param  callable  $callable  The middleware function to call. Must match (Request $request, $next, ...$args)
+     */
+    public static function add(string $name, callable $callable): void
     {
         static::$middleware[$name] = $callable;
     }
 
-    public static function __callStatic(string $name, array $arguments)
+    /**
+     * Handles the middleare call. Checks to see if a matching middleware exists and then calls it
+     *
+     * @param  string  $name
+     * @param  array  $arguments
+     */
+    public static function __callStatic(string $name, array $arguments): void
     {
         // Split middleware with params
         if (str_contains($name, ':')) {
@@ -32,6 +44,14 @@ class Middleware
         }
     }
 
+    /**
+     * Checks if a user is authorized. If not user is redirected to the login page
+     *
+     * @param  Request  $request
+     * @param $next
+     * @param ...$capabilities  - If set then user must match any of these capabilities
+     * @return mixed
+     */
     public static function auth(Request $request, $next, ...$capabilities)
     {
         $user = \wp_get_current_user();
@@ -53,9 +73,11 @@ class Middleware
     }
 
     /**
+     * Verifies a nonce. Optionally by name
+     * This middleware expects the nonce request param to be named '_wpnonce' if you need to verify a different value, then implement your own validation in your controller
+     *
      * @param  Request  $request
      * @param $next
-     * @param  string  $nonceField
      * @param  int|string  $action
      *
      * @see https://developer.wordpress.org/reference/functions/wp_verify_nonce/

@@ -234,9 +234,9 @@ class Route
         return $this->group;
     }
 
-    public function applyMiddleware(Request $request): self
+    public function handleMiddleware(Request $request): self
     {
-        $this->getGroup()?->applyMiddleware($request);
+        $this->getGroup()?->handleMiddleware($request);
 
         return $this;
     }
