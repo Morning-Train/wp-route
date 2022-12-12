@@ -4,7 +4,7 @@ namespace Morningtrain\WP\Route;
 
 use Closure;
 use Morningtrain\PHPLoader\Loader;
-use Morningtrain\WP\Route\Classes\Group;
+use Morningtrain\WP\Route\Classes\RouteGroup;
 use Morningtrain\WP\Route\Classes\RouteService;
 use Morningtrain\WP\Route\Classes\Route as RouteInstance;
 
@@ -189,7 +189,7 @@ class Route
 
     public static function group(array $atts, Closure $routes): void
     {
-        $group = new Group();
+        $group = new RouteGroup();
         if (! empty($atts['prefix'])) {
             $group->prefix($atts['prefix']);
         }
@@ -201,13 +201,13 @@ class Route
         $group->group($routes);
     }
 
-    public static function prefix(string $prefix): Group
+    public static function prefix(string $prefix): RouteGroup
     {
-        return (new Group())->prefix($prefix);
+        return (new RouteGroup())->prefix($prefix);
     }
 
-    public static function middleware(array|callable|string $middleware): Group
+    public static function middleware(array|callable|string $middleware): RouteGroup
     {
-        return (new Group())->middleware($middleware);
+        return (new RouteGroup())->middleware($middleware);
     }
 }

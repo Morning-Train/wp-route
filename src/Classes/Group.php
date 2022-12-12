@@ -2,7 +2,6 @@
 
 namespace Morningtrain\WP\Route\Classes;
 
-use Illuminate\Container\Container;
 use Illuminate\Pipeline\Pipeline;
 use Morningtrain\WP\Route\Responses\ExceptionErrorResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -10,11 +9,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Group
 {
-    private static ?self $currentGroup = null;
+    protected static ?self $currentGroup = null;
 
-    private array $middleware = [];
-    private string $prefix = '';
-    private ?self $group = null;
+    protected array $middleware = [];
+    protected ?self $group = null;
 
     public static function getCurrentGroup(): ?static
     {
@@ -25,18 +23,6 @@ class Group
     {
         $this->group = static::getCurrentGroup();
         static::$currentGroup = $this;
-    }
-
-    public function prefix(string $prefix): static
-    {
-        $this->prefix = trim($prefix, '/');
-
-        return $this;
-    }
-
-    public function getPrefix(): string
-    {
-        return implode('/', array_filter([$this->group?->getPrefix(), $this->prefix]));
     }
 
     public function middleware(array|callable|string $middleware): static

@@ -14,7 +14,7 @@ class Route
     private string $defaultParamRegex = '([^/]+)';
     private array $params = [];
 
-    private ?Group $group = null;
+    private ?RouteGroup $group = null;
 
     /**
      * Route constructor.
@@ -28,7 +28,7 @@ class Route
     ) {
         $this->extractPathParams();
 
-        $this->group = Group::getCurrentGroup();
+        $this->group = RouteGroup::getCurrentGroup();
 
         return $this;
     }
@@ -229,7 +229,7 @@ class Route
         return $this;
     }
 
-    public function getGroup(): ?Group
+    public function getGroup(): ?RouteGroup
     {
         return $this->group;
     }
