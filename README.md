@@ -13,6 +13,7 @@ A Route Service for WordPress that uses the WordPress rewrite engine and adds La
     - [Adding a route](#adding-a-route)
     - [A route with arguments](#a-route-with-arguments)
     - [Using named routes](#using-named-routes)
+    - [Grouping Routes](#grouping-routes)
 - [Credits](#credits)
 - [Testing](#testing)
 - [License](#license)
@@ -114,6 +115,42 @@ $url = \Morningtrain\WP\Route\RouteService::getUrl('kittens',['kitten_id' => 1])
 $bool = \Morningtrain\WP\Route\RouteService::isCurrentRoute('kitten');
 ```
 
+### Grouping Routes
+
+You may group a set of routes to apply a shared prefix to all of them or to apply shared middleware.
+
+#### With prefix
+
+```php
+use \Morningtrain\WP\Route\Route;
+Route::prefix('my-prefix')->group(function(){
+    Route::get('foo',FooController::class); // url will be /my-prefix/foo
+    Route::get('bar',BarController::class); // url will be /my-prefix/bar
+})
+```
+
+#### With middleware
+
+```php
+use \Morningtrain\WP\Route\Route;
+// Users must now be logged in to view these two routes
+Route::middleware('auth')->group(function(){
+    Route::get('foo',FooController::class);
+    Route::get('bar',BarController::class);
+})
+```
+
+#### With both prefix and middleware
+
+```php
+use \Morningtrain\WP\Route\Route;
+Route::prefix('my-prefix')
+->middleware('auth')
+->group(function(){
+    Route::get('foo',FooController::class);
+    Route::get('bar',BarController::class);
+})
+```
 
 ## Credits
 
