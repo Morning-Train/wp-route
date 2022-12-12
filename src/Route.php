@@ -187,6 +187,12 @@ class Route
         return RouteService::currentRoute();
     }
 
+    /**
+     * Prepare a group for a set routes
+     *
+     * @param  array  $atts
+     * @param  Closure  $routes
+     */
     public static function group(array $atts, Closure $routes): void
     {
         $group = new RouteGroup();
@@ -201,11 +207,23 @@ class Route
         $group->group($routes);
     }
 
+    /**
+     * Prepare a prefixed group of routes
+     *
+     * @param  string  $prefix
+     * @return RouteGroup
+     */
     public static function prefix(string $prefix): RouteGroup
     {
         return (new RouteGroup())->prefix($prefix);
     }
 
+    /**
+     * Prepare a group of routes with middleware
+     *
+     * @param  array|callable|string  $middleware
+     * @return RouteGroup
+     */
     public static function middleware(array|callable|string $middleware): RouteGroup
     {
         return (new RouteGroup())->middleware($middleware);

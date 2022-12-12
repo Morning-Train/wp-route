@@ -20,7 +20,7 @@ class Middleware
     }
 
     /**
-     * Handles the middleare call. Checks to see if a matching middleware exists and then calls it
+     * Handles the middleware call. Checks to see if a matching middleware exists and then calls it
      *
      * @param  string  $name
      * @param  array  $arguments
@@ -66,6 +66,11 @@ class Middleware
         return $next($request);
     }
 
+    /**
+     * Send user to the login page with current URL as return URL
+     *
+     * @param  Request|null  $request
+     */
     private static function goToLogin(?Request $request)
     {
         \wp_safe_redirect(\wp_login_url($request?->getPathInfo() ?? ''));

@@ -229,11 +229,23 @@ class Route
         return $this;
     }
 
+    /**
+     * Get the routes associated group if it has one
+     *
+     * @return RouteGroup|null
+     */
     public function getGroup(): ?RouteGroup
     {
         return $this->group;
     }
 
+    /**
+     * Handle all middleware for this route
+     *
+     * @param  Request  $request
+     *
+     * @return $this
+     */
     public function handleMiddleware(Request $request): self
     {
         $this->getGroup()?->handleMiddleware($request);
@@ -241,6 +253,12 @@ class Route
         return $this;
     }
 
+    /**
+     * Get a serialized representation of this route.
+     * This is used to determine if route has changed and needs to flush rewrite rules
+     *
+     * @return array
+     */
     public function __serialize(): array
     {
         return [$this->getName(), $this->getPath(), $this->getPosition()];
