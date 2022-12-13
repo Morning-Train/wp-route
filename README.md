@@ -13,10 +13,12 @@ A Route Service for WordPress that uses the WordPress rewrite engine and adds La
     - [Adding a route](#adding-a-route)
     - [A route with arguments](#a-route-with-arguments)
     - [Using named routes](#using-named-routes)
+    - [Grouping Routes](#grouping-routes)
+- [Middleware](#middleware)
+  - [A quick example](#a-quick-example)
 - [Credits](#credits)
 - [Testing](#testing)
 - [License](#license)
--
 
 ## Introduction
 
@@ -114,6 +116,78 @@ $url = \Morningtrain\WP\Route\RouteService::getUrl('kittens',['kitten_id' => 1])
 $bool = \Morningtrain\WP\Route\RouteService::isCurrentRoute('kitten');
 ```
 
+### Grouping Routes
+
+You may group a set of routes to apply a shared prefix to all of them or to apply shared middleware.
+
+#### With prefix
+
+```php
+use \Morningtrain\WP\Route\Route;
+Route::prefix('my-prefix')->group(function(){
+    Route::get('foo',FooController::class); // url will be /my-prefix/foo
+    Route::get('bar',BarController::class); // url will be /my-prefix/bar
+})
+```
+
+#### With middleware
+
+```php
+use \Morningtrain\WP\Route\Route;
+// Users must now be logged in to view these two routes
+Route::middleware('auth')->group(function(){
+    Route::get('foo',FooController::class);
+    Route::get('bar',BarController::class);
+})
+```
+
+#### With both prefix and middleware
+
+```php
+use \Morningtrain\WP\Route\Route;
+Route::prefix('my-prefix')
+->middleware('auth')
+->group(function(){
+    Route::get('foo',FooController::class);
+    Route::get('bar',BarController::class);
+})
+```
+
+### Middleware
+
+Middleware are functions called for a route after it has been matched against a url, but before its callback is called.
+
+Middleware are useful for validating a group of routes, validating a users permissions or hijacking a request.
+
+Read more about them here: [Laravel Docs - Middleware](https://laravel.com/docs/middleware)
+
+#### A quick example
+
+Middleware are function that receive a request object and a closure that represents the next middleware in the pipeline.
+It is important to always `return $next($request);` at the end of a valid middleware.
+
+In the example below we create a middleware that stops the pipeline if the current user is not logged in and returns a response with status 404.
+If the user is logged in the middleware pipeline continues and eventually lets the route call its controller.
+
+A middleware is allowed to either continue the pipeline, return a Response or throw an exception.
+Responses must be `\Symfony\Component\HttpFoundation\Response` and will be sent automatically.
+Exceptions are caught and converted into custom `\Morningtrain\WP\Route\Responses\WPErrorResponse` that are then displayed using `wp_die()`
+
+```php
+use Morningtrain\WP\Route\Route;
+use \Symfony\Component\HttpFoundation\Request;
+Route::middleware([function(Request $request, $next){
+    if(!\is_user_logged_in()){
+        // Returns a Response object
+        return \Morningtrain\WP\Route\Classes\Response::with404();    
+    }
+    // Continues the middleware pipeline
+    return $next($request);
+}])
+->group(function(){
+    Route::get('my-account',MyAccountController::class);
+});
+```
 
 ## Credits
 

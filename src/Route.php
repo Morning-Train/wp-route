@@ -2,7 +2,9 @@
 
 namespace Morningtrain\WP\Route;
 
+use Closure;
 use Morningtrain\PHPLoader\Loader;
+use Morningtrain\WP\Route\Classes\RouteGroup;
 use Morningtrain\WP\Route\Classes\RouteService;
 use Morningtrain\WP\Route\Classes\Route as RouteInstance;
 
@@ -183,5 +185,47 @@ class Route
     public static function current(): ?RouteInstance
     {
         return RouteService::currentRoute();
+    }
+
+    /**
+     * Prepare a group for a set routes
+     *
+     * @param  array  $atts
+     * @param  Closure  $routes
+     */
+    public static function group(array $atts, Closure $routes): void
+    {
+        $group = new RouteGroup();
+        if (! empty($atts['prefix'])) {
+            $group->prefix($atts['prefix']);
+        }
+        if (! empty($atts['middleware'])) {
+            foreach ($atts['middleware'] as $middleware) {
+                $group->middleware($middleware);
+            }
+        }
+        $group->group($routes);
+    }
+
+    /**
+     * Prepare a prefixed group of routes
+     *
+     * @param  string  $prefix
+     * @return RouteGroup
+     */
+    public static function prefix(string $prefix): RouteGroup
+    {
+        return (new RouteGroup())->prefix($prefix);
+    }
+
+    /**
+     * Prepare a group of routes with middleware
+     *
+     * @param  array|callable|string  $middleware
+     * @return RouteGroup
+     */
+    public static function middleware(array|callable|string $middleware): RouteGroup
+    {
+        return (new RouteGroup())->middleware($middleware);
     }
 }

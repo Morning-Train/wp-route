@@ -2,6 +2,8 @@
 
 namespace Morningtrain\WP\Route\Classes;
 
+use Symfony\Component\HttpFoundation\Request;
+
 class RouteService
 {
     /** Contains all registered routes
@@ -335,7 +337,9 @@ class RouteService
             return;
         }
 
-        static::$matchedRoute->call();
+        $request = Request::createFromGlobals();
+
+        static::$matchedRoute->handleMiddleware($request)->call();
         exit;
     }
 }
