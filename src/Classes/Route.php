@@ -6,6 +6,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Route
 {
+    private string $path;
+    private $callback;
     private ?string $name = null;
     private array $requestMethods = [];
     private string $position = 'top';
@@ -23,9 +25,11 @@ class Route
      * @param  callable|string  $callback
      */
     public function __construct(
-        private string $path,
-        private $callback
+        string $path,
+        callable|string $callback
     ) {
+        $this->path = trim($path, '/');
+        $this->callback = $callback;
         $this->extractPathParams();
 
         $this->group = RouteGroup::getCurrentGroup();

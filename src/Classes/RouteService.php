@@ -290,7 +290,7 @@ class RouteService
             return null;
         }
 
-        return trim(\home_url(), '/') . $route->getUrl($args);
+        return \trailingslashit(\home_url()) . $route->getUrl($args);
     }
 
     /**
