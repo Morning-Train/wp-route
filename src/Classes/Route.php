@@ -170,14 +170,14 @@ class Route
     /**
      * Calls the route callback
      */
-    public function call(): static
+    public function call(Request $request): static
     {
         // If callback is a string and a class, then it must be for invoking
         $callback = $this->getCallback();
         if (is_string($callback) && class_exists($callback)) {
             $callback = new $callback();
         }
-        ($callback)(...array_values($this->getQueryVars()));
+        ($callback)($request);
 
         return $this;
     }

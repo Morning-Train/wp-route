@@ -327,19 +327,15 @@ class RouteService
     public static function onTemplateRedirect()
     {
         if (! static::$matchedRoute instanceof Route) {
-            if (static::$is404) {
-                global $wp_query;
-                $wp_query->set_404();
-                \status_header(404);
-                \get_template_part(404);
-            }
-
-            return;
+            Response::withWordPressTemplate('404', 404)->send();
+            exit;
         }
 
         $request = Request::createFromGlobals();
+        global $wp_query;
+        $request->query->add($wp_query->query_vars);
 
-        static::$matchedRoute->handleMiddleware($request)->call();
+        static::$matchedRoute->handleMiddleware($request)->call($request);
         exit;
     }
 }
