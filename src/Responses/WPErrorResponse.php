@@ -32,7 +32,7 @@ class WPErrorResponse extends \Symfony\Component\HttpFoundation\Response
         return $this;
     }
 
-    public function displayBacklink(bool $backlink): static
+    public function displayBacklink(bool $backlink = true): static
     {
         $this->backLink = $backlink;
 
