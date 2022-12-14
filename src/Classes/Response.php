@@ -34,7 +34,7 @@ class Response
     public static function withView(string $view, array $data = []): SymfonyResponse
     {
         if (! class_exists('\Morningtrain\WP\View\View')) {
-            throw new \Exception('no_view_lol');
+            throw new \Exception('view_package_is_not_installed');
         }
 
         return new SymfonyResponse(\Morningtrain\WP\View\View::render($view, $data));
