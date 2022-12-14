@@ -34,7 +34,7 @@ class Response
     public static function withView(string $view, array $data = []): SymfonyResponse
     {
         if (! class_exists('\Morningtrain\WP\View\View')) {
-            throw new \Exception('no_view_lol');
+            throw new \Exception('view_package_is_not_installed');
         }
 
         return new SymfonyResponse(\Morningtrain\WP\View\View::render($view, $data));
@@ -57,12 +57,16 @@ class Response
     /**
      * Set HTTP status code 404
      *
-     * @param  string  $message
+     * @param  ?string  $message
      * @return SymfonyResponse
      */
-    public static function with404(string $message = '404'): SymfonyResponse
+    public static function with404(?string $message = null): SymfonyResponse
     {
-        return new SymfonyResponse($message, 404);
+        if ($message === null) {
+            return static::withWordPressTemplate('404', 404);
+        }
+
+        return new SymfonyResponse($message ?? '', 404);
     }
 
     /**
@@ -93,15 +97,27 @@ class Response
         int $status = 200,
         array $headers = []
     ): SymfonyResponse {
-        ob_start();
-        // For a block theme
-        $blockTemplate = \get_block_template(\get_stylesheet() . '//' . $template);
-        if (is_a($blockTemplate, \WP_Block_Template::class)) {
-            \wp_head();
-            echo \do_blocks($blockTemplate->content);
-            \wp_footer();
+        $response = '';
+        if ($template == 404) {
+            global $wp_query;
+            $wp_query->set_404();
+        }
+        if (function_exists('wp_is_block_theme') && \wp_is_block_theme()) {
+            // For a block theme
+            $blockTemplate = \get_block_template(\get_stylesheet() . '//' . $template);
+            if (is_a($blockTemplate, \WP_Block_Template::class)) {
+                ob_start();
+                \wp_head();
+                echo \do_blocks($blockTemplate->content);
+                \wp_footer();
+                $response = ob_get_clean();
+            }
+        } else {
+            ob_start();
+            \get_template_part(404);
+            $response = ob_get_clean();
         }
 
-        return static::with((string) ob_get_clean(), $status, $headers);
+        return static::with((string) $response, $status, $headers);
     }
 }

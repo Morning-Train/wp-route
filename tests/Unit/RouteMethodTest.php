@@ -93,9 +93,9 @@ it('lets routes return their params', function () {
 });
 
 it('can call route callbacks', function () {
-    $route = \Morningtrain\WP\Route\Route::get('path}',function(){echo "hello";});
+    $route = \Morningtrain\WP\Route\Route::get('path',function(){echo "hello";});
     ob_start();
-    $route->call();
+    $route->call(new \Symfony\Component\HttpFoundation\Request());
     $obj = ob_get_clean();
     expect($obj)->toBe('hello');
 });
@@ -119,7 +119,7 @@ it('can use invokable controllers', function () {
     }
     $route = \Morningtrain\WP\Route\Route::get('foo', InvokableRouteController::class);
     ob_start();
-    $route->call();
+    $route->call(new \Symfony\Component\HttpFoundation\Request());
     $obj = ob_get_clean();
     expect($obj)->toBe('hello');
 });
