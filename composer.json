@@ -16,7 +16,8 @@
     ],
     "autoload": {
         "psr-4": {
-            "Morningtrain\\WP\\Route\\": "src/"
+            "Morningtrain\\WP\\Route\\": "src/",
+            "Morningtrain\\WP\\Facades\\": "facades/"
         }
     },
     "autoload-dev": {
@@ -29,6 +30,8 @@
         "php": "^8.0",
         "morningtrain/php-loader": "^0.3.0",
         "illuminate/pipeline": "^8|^9",
+        "illuminate/container": "^8|^9",
+        "illuminate/support": "^8|^9",
         "symfony/http-foundation": "^6"
     },
     "require-dev": {
