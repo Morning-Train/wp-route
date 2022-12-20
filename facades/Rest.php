@@ -15,16 +15,15 @@ use Morningtrain\WP\Route\Abstracts\AbstractRoute;
  * @method static AbstractRoute patch(string $path, callable $callback) Add a PATCH route
  * @method static AbstractRoute delete(string $path, callable $callback) Add a DELETE route
  * @method static AbstractRoute options(string $path, callable $callback) Add a OPTIONS route
- * @method static AbstractGroup middleware($middleware) Create a group with middleware
+ * * @method static AbstractGroup middleware($middleware) Create a group with middleware
  * @method static AbstractGroup prefix(string $prefix) Create a group with prefix
  * @method static AbstractGroup group(\Closure $routes) Create a simple group
  * @method static string route(string $name, ?array $args) Get the URL of a route
- * @method static AbstractRoute|null current() Get the currently matched route. Only accessible after 'parse_request' action
  */
-class Route extends Facade
+class Rest extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'rewrite-router';
+        return 'rest-router';
     }
 }

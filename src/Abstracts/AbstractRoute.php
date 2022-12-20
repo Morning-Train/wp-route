@@ -90,14 +90,14 @@ abstract class AbstractRoute
     /**
      * Calls the route callback
      */
-    public function call(Request $request): static
+    public function call(Request $request, ...$args): static
     {
         // If callback is a string and a class, then it must be for invoking
         $callback = $this->getCallback();
         if (is_string($callback) && class_exists($callback)) {
             $callback = new $callback();
         }
-        ($callback)($request);
+        ($callback)($request, ...$args);
 
         return $this;
     }

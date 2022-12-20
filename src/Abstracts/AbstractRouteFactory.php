@@ -34,6 +34,9 @@ abstract class AbstractRouteFactory
 
     public function registerRoutes()
     {
+        if ($this->routes->isEmpty()) {
+            return;
+        }
         $this->routes->each(function (AbstractRoute $route) {
             $route->register();
         });
@@ -88,7 +91,6 @@ abstract class AbstractRouteFactory
             $requestMethods
         );
         $route->setGroup($this->getCurrentGroup());
-
         $this->routes->add($route);
 
         return $route;

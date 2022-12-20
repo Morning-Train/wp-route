@@ -32,10 +32,6 @@ class Router extends AbstractRouteFactory
 
     public function registerRoutes()
     {
-        if ($this->routes->isEmpty()) {
-            return;
-        }
-
         $this->addMainRewriteTag();
         parent::registerRoutes();
         $routesHash = md5(serialize($this->routes->toArray()));
