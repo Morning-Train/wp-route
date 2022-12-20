@@ -1,28 +1,56 @@
 <?php
 
-namespace Morningtrain\WP\Route\Classes;
+namespace Morningtrain\WP\Route\Abstracts;
 
 use Illuminate\Pipeline\Pipeline;
+use Morningtrain\WP\Route\Classes\Middleware;
 use Morningtrain\WP\Route\Responses\ExceptionErrorResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class Group
+abstract class AbstractGroup
 {
-    protected static ?self $currentGroup = null;
-
     protected array $middleware = [];
     protected ?self $group = null;
+    protected string $prefix = '';
 
-    public static function getCurrentGroup(): ?static
+    abstract protected function open(): void;
+
+    abstract protected function close(): void;
+
+    public function getGroup(): ?static
     {
-        return static::$currentGroup;
+        return $this->group;
     }
 
-    public function __construct()
+    public function setGroup(?self $group): static
     {
-        $this->group = static::getCurrentGroup();
-        static::$currentGroup = $this;
+        $this->group = $group;
+
+        return $this;
+    }
+
+    /**
+     * Add a prefix to a group
+     *
+     * @param  string  $prefix
+     * @return $this
+     */
+    public function prefix(string $prefix): static
+    {
+        $this->prefix = trim($prefix, '/');
+
+        return $this;
+    }
+
+    /**
+     * Get the full prefix for this group including parent groups prefixes
+     *
+     * @return string
+     */
+    public function getPrefix(): string
+    {
+        return implode('/', array_filter([$this->group?->getPrefix(), $this->prefix]));
     }
 
     public function middleware(array|callable|string $middleware): static
@@ -70,8 +98,9 @@ class Group
 
     public function group(\Closure $routes): static
     {
+        $this->open();
         $routes();
-        static::$currentGroup = $this->group; // Reset
+        $this->close();
 
         return $this;
     }
