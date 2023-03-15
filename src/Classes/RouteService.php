@@ -51,7 +51,6 @@ class RouteService
 
         \add_action('init', [static::class, 'registerRoutes']);
         \add_action('parse_request', [static::class, 'matchRequest']);
-        \add_action('template_redirect', [static::class, 'onTemplateRedirect']);
 
         static::$actionsHasBeenAdded = true;
     }
@@ -189,10 +188,10 @@ class RouteService
         $route = static::getRoute(\urlencode($query_vars[static::$routeQueryVar]), $_SERVER['REQUEST_METHOD']);
 
         if (empty($route)) {
-            static::$is404 = true;
-
             return null;
         }
+
+        \add_action('template_redirect', [static::class, 'onTemplateRedirect']);
 
         return $route;
     }
