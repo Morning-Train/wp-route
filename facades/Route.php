@@ -9,7 +9,7 @@ use Morningtrain\WP\Route\Abstracts\AbstractRoute;
 /**
  * @method static AbstractRoute any(string $path, callable $callback) Add a route that accepts any request type
  * @method static AbstractRoute match(array $requestMethods, string $path, callable $callback) Add a route that accepts multiple request methods
- * @method static AbstractRoute get(string $path, callable $callback) Add a GET route
+ * @method static AbstractRoute get(string $path, string|callable $callback) Add a GET route
  * @method static AbstractRoute post(string $path, callable $callback) Add a POST route
  * @method static AbstractRoute put(string $path, callable $callback) Add a PUT route
  * @method static AbstractRoute patch(string $path, callable $callback) Add a PATCH route

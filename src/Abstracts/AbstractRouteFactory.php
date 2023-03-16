@@ -9,7 +9,7 @@ use Illuminate\Support\Collection;
  */
 abstract class AbstractRouteFactory
 {
-    abstract public function newRoute(string $path, callable $callback): AbstractRoute;
+    abstract public function newRoute(string $path, string|callable $callback): AbstractRoute;
 
     abstract public function newGroup(): AbstractGroup;
 
@@ -74,7 +74,7 @@ abstract class AbstractRouteFactory
         return $this->getRouteByName($routeName)?->getUrl($args);
     }
 
-    public function match(array $requestMethods, string $path, callable $callback): ?AbstractRoute
+    public function match(array $requestMethods, string $path, string|callable $callback): ?AbstractRoute
     {
         // Remove methods that we either don't recognize or allow
         $requestMethods = array_map('strtoupper', $requestMethods);
@@ -96,37 +96,37 @@ abstract class AbstractRouteFactory
         return $route;
     }
 
-    public function any(string $path, callable $callback): ?AbstractRoute
+    public function any(string $path, string|callable $callback): ?AbstractRoute
     {
         return $this->match($this->getAllowedRequestMethods(), $path, $callback);
     }
 
-    public function get(string $path, callable $callback): ?AbstractRoute
+    public function get(string $path, string|callable $callback): ?AbstractRoute
     {
         return $this->match(['GET'], $path, $callback);
     }
 
-    public function post(string $path, callable $callback): ?AbstractRoute
+    public function post(string $path, string|callable $callback): ?AbstractRoute
     {
         return $this->match(['POST'], $path, $callback);
     }
 
-    public function patch(string $path, callable $callback): ?AbstractRoute
+    public function patch(string $path, string|callable $callback): ?AbstractRoute
     {
         return $this->match(['PATCH'], $path, $callback);
     }
 
-    public function put(string $path, callable $callback): ?AbstractRoute
+    public function put(string $path, string|callable $callback): ?AbstractRoute
     {
         return $this->match(['PUT'], $path, $callback);
     }
 
-    public function options(string $path, callable $callback): ?AbstractRoute
+    public function options(string $path, string|callable $callback): ?AbstractRoute
     {
         return $this->match(['OPTIONS'], $path, $callback);
     }
 
-    public function delete(string $path, callable $callback): ?AbstractRoute
+    public function delete(string $path, string|callable $callback): ?AbstractRoute
     {
         return $this->match(['DELETE'], $path, $callback);
     }

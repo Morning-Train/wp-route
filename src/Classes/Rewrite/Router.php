@@ -42,7 +42,7 @@ class Router extends AbstractRouteFactory
         \add_action('parse_request', [$this, 'matchRequest']);
     }
 
-    public function newRoute(string $path, callable $callback): Route
+    public function newRoute(string $path, string|callable $callback): Route
     {
         return new Route($path, $callback);
     }
