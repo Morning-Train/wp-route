@@ -114,7 +114,7 @@ class Response
             }
         } else {
             ob_start();
-            \get_template_part(404);
+            \get_template_part($template);
             $response = ob_get_clean();
         }
 
