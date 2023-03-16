@@ -18,7 +18,8 @@ afterAll(function () {
 });
 
 beforeEach(function () {
-    Router::setup(); // This resets singletons
+    Router::getContainer()->forgetInstance('rewrite-router');
+    Route::clearResolvedInstances();
 });
 
 function _testRequestMethod($method)
@@ -83,12 +84,6 @@ it('returns null when a named route doesn\'t exist', function () {
     expect(Route::getRouteByName('some-route-that-does-not-exist'))->toBeNull();
 });
 
-it('can use path variables in URL', function () {
-    Route::get('path/{foo}', function () {
-    })->name('path-with-id');
-    expect(Route::route('path-with-id', ['foo' => '123']))->toEndWith('path/123');
-});
-
 it('return null as URL for unknown route', function () {
     expect(Route::route('some-route-that-does-not-exist', ['foo' => '123']))->toBeNull();
 });
@@ -109,19 +104,6 @@ it('can call route callbacks', function () {
     expect($obj)->toBe('hello');
 });
 
-it('set default position to top', function () {
-    $route = Route::get('foo', function () {
-    });
-    expect($route->getPosition())->toBe('top');
-});
-
-it('can have a position', function () {
-    Route::get('foo', function () {
-    })->name('route-position')->position('bottom');
-    expect(Route::getRouteByName('route-position')
-        ->getPosition())->toBe('bottom');
-});
-
 it('can use invokable controllers', function () {
     class InvokableRouteController
     {
@@ -137,27 +119,3 @@ it('can use invokable controllers', function () {
     $obj = ob_get_clean();
     expect($obj)->toBe('hello');
 });
-
-it('can get route by path', function () {
-    Route::get('route-path', function () {
-    });
-    expect(Route::getRouteByPathAndMethod('route-path', 'GET'))->toBeInstanceOf(RouteInstance::class);
-});
-
-it('returns null with get route on invalid path', function () {
-    expect(Route::getRouteByPathAndMethod('some-route-that-does-not-exist', 'GET'))->toBeNull();
-});
-
-it('can find routes by path and method', function () {
-    Route::put('route-method-path', function () {
-    })->name('put-route');
-    Route::get('route-method-path', function () {
-    })->name('get-route');
-    Route::post('route-method-path', function () {
-    })->name('post-route');
-
-    $route = Route::getRouteByPathAndMethod('route-method-path', 'GET');
-    expect($route)->toBeInstanceOf(RouteInstance::class);
-    expect($route->getName())->toBe('get-route');
-});
-

@@ -18,7 +18,7 @@ use Morningtrain\WP\Route\Abstracts\AbstractRoute;
  * @method static AbstractGroup middleware($middleware) Create a group with middleware
  * @method static AbstractGroup prefix(string $prefix) Create a group with prefix
  * @method static AbstractGroup group(\Closure $routes) Create a simple group
- * @method static string route(string $name, ?array $args) Get the URL of a route
+ * @method static string route(string $name, ?array $args = []) Get the URL of a route
  * @method static AbstractRoute|null current() Get the currently matched route. Only accessible after 'parse_request' action
  * @method static AbstractRoute|null getRouteByName(string $name) Get a route instance by its name
  * @method static bool exists(string $name) Check if a route exists by its name

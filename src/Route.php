@@ -30,8 +30,10 @@ class Route
 
     public static function loadDir(string|array $path)
     {
+        if(!isset(static::$container)){
+            throw new \Exception('No app container found. Make sure that Route has been setup with Route::setup()');
+        }
         Loader::create($path);
-
     }
 
     public static function getContainer(): Container
