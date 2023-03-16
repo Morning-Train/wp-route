@@ -25,7 +25,7 @@ class Middleware
      * @param  string  $name
      * @param  array  $arguments
      */
-    public static function __callStatic(string $name, array $arguments): void
+    public static function __callStatic(string $name, array $arguments)
     {
         // Split middleware with params
         if (str_contains($name, ':')) {
@@ -33,14 +33,12 @@ class Middleware
             $arguments = array_merge($arguments, explode(',', $params));
             // If method exists by this name then call it!
             if (method_exists(static::class, $name)) {
-                static::$name(...$arguments);
-
-                return;
+                return static::$name(...$arguments);
             }
         }
         // Let's call the registered middleware
         if (array_key_exists($name, static::$middleware)) {
-            static::$middleware[$name](...$arguments);
+            return static::$middleware[$name](...$arguments);
         }
     }
 
