@@ -20,6 +20,10 @@ use Morningtrain\WP\Route\Abstracts\AbstractRoute;
  * @method static AbstractGroup group(\Closure $routes) Create a simple group
  * @method static string route(string $name, ?array $args) Get the URL of a route
  * @method static AbstractRoute|null current() Get the currently matched route. Only accessible after 'parse_request' action
+ * @method static AbstractRoute|null getRouteByName(string $name) Get a route instance by its name
+ * @method static bool exists(string $name) Check if a route exists by its name
+ * @method static array getAllowedRequestMethods() Get a list of all allowed request methods
+ * @method static null|AbstractRoute getRouteByPathAndMethod(string $path, string $requestMethod) Get a route by its path and a request method
  */
 class Route extends Facade
 {

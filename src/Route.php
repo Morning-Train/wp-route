@@ -13,7 +13,7 @@ class Route
 {
     protected static Container $container;
 
-    public static function loadDir(string|array $path)
+    public static function setup(null|string|array $path = null)
     {
         static::$container = new Container();
 
@@ -23,7 +23,15 @@ class Route
         \Morningtrain\WP\Facades\Rest::setFacadeApplication(static::getContainer());
         static::$container->singleton('rest-router', fn() => new RestRouter(new CallbackHandler()));
 
+        if ($path !== null) {
+            static::loadDir($path);
+        }
+    }
+
+    public static function loadDir(string|array $path)
+    {
         Loader::create($path);
+
     }
 
     public static function getContainer(): Container

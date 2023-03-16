@@ -69,6 +69,11 @@ abstract class AbstractRouteFactory
         })->first();
     }
 
+    public function exists(string $name): bool
+    {
+        return $this->getRouteByName($name) !== null;
+    }
+
     public function route(string $routeName, array $args = []): ?string
     {
         return $this->getRouteByName($routeName)?->getUrl($args);

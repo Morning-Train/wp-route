@@ -81,6 +81,12 @@ class Router extends AbstractRouteFactory
     {
         $path = \urlencode($query_vars[$this->routeQueryVar]);
         $requestMethod = $_SERVER['REQUEST_METHOD'];
+
+        return $this->getRouteByPathAndMethod($path, $requestMethod);
+    }
+
+    public function getRouteByPathAndMethod(string $path, string $requestMethod): ?Route
+    {
         $matchedRoutes = $this->routes->filter(function (Route $route) use ($requestMethod, $path) {
             if (\urlencode($route->getPath()) === $path) {
                 if ($requestMethod === null || in_array($requestMethod, $route->getRequestMethods())) {
