@@ -59,7 +59,7 @@ class Route extends AbstractRoute
             return '__return_true';
         }
 
-        return null;
+        return '__return_false';
     }
 
     public function permissionCallback(string|callable $callback): static
