@@ -12,13 +12,19 @@ A Route Service for WordPress that uses the WordPress rewrite engine and adds La
     - [illuminate/pipeline](#illuminatepipeline)
     - [Symfony HTTP Foundation](#symfony-http-foundation)
 - [Usage](#usage)
+    - [Setup](#setup)
     - [Adding a route](#adding-a-route)
     - [A route with arguments](#a-route-with-arguments)
     - [Using named routes](#using-named-routes)
     - [Grouping Routes](#grouping-routes)
-    - [Accessing WP Query Vars]()
+    - [Accessing WP Query Vars](#accessing-wp-query-vars)
 - [Middleware](#middleware)
     - [A quick example](#a-quick-example)
+- [REST](#rest)
+    - [Options](#options)
+    - [Public](#public)
+    - [Expose](#expose)
+    - [Changing the namespace](#changing-the-namespace)
 - [Credits](#credits)
 - [Testing](#testing)
 - [License](#license)
@@ -63,6 +69,17 @@ composer require morningtrain/wp-route
 [Symfony Http Foundation](https://symfony.com/doc/current/components/http_foundation.html)
 
 ## Usage
+
+### Setup
+
+Initialize the package with `Route::setup($path)` or, if the package is already initialized, load a directory of routes
+with `Route::loadDir($path)`
+
+```php
+use Morningtrain\WP\Route\Route;
+
+Route::setup(__DIR__ . '/routes');
+```
 
 ### Adding a route
 
@@ -224,6 +241,75 @@ Route::middleware([function(Request $request, $next){
 }])
 ->group(function(){
     Route::get('my-account',MyAccountController::class);
+});
+```
+
+### Rest
+
+You can also register rest endpoints using the same syntax! Behind the scenes all Rest routes are registered
+using [register_rest_route](https://developer.wordpress.org/reference/functions/register_rest_route/)
+
+```php
+use Morningtrain\WP\Facades\Rest;
+
+Rest::get('products', [ProductRestController::class, 'getAllProducts'])->public(); // Will register an endpoint like /wp-json/mtwp/v1/products that accepts GET requests
+
+```
+
+#### Options
+
+You can use middleware, prefix, groups and names on Rest routes the same way as you can on rewrite routes!!
+
+**Note:** Middleware is applied AFTER WordPress has identified the route and passed through all other verifications such
+as `permission_callback`, but before the controller or supplied callback is called.
+
+##### Public
+
+To make an endpoint public chain `public()` on either the route or its group. This simply sets the `permission_callback`
+to `__return_true`. This defaults to `__return_false`.
+
+##### Expose
+
+You can expose the endpoint URL to the DOM by chaining `expose()` onto the route or its group. This outputs the url to a
+JavaScript object similar to the
+way [localize_script](https://developer.wordpress.org/reference/functions/wp_localize_script/) would.
+
+The exposed url can be accessed like so:
+
+```js
+const fooEndpointUrl = window.mtwpRestRoutes.foo; // /wp-json/mtwp/v1/foo
+```
+
+**Note:** to expose an endpoint it has to be named.
+
+##### Changing the namespace
+
+You can set the namespace the same way you would a prefix.
+
+```php
+use Morningtrain\WP\Facades\Rest;
+
+Rest::namespace('foo/v1')->group(function(){
+    Rest::get('foo',FooController::class); // /wp-json/foo/v1/foo
+});
+```
+
+This can be combined with prefixes
+
+```php
+use Morningtrain\WP\Facades\Rest;
+
+Rest::namespace('foo/v1')->prefix('bar')->group(function(){
+    Rest::get('foo',FooController::class); // /wp-json/foo/bar/v1/foo
+});
+
+// -- or --
+
+Rest::namespace('foo/v1')->group(function(){
+    Rest::prefix('bar')->group(function(){
+        Rest::get('foo',FooController::class); // /wp-json/foo/bar/v1/foo
+        Rest::get('baz',FooController::class); // /wp-json/foo/bar/v1/baz
+    });
 });
 ```
 
