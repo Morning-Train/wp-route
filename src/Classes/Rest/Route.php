@@ -15,6 +15,9 @@ class Route extends AbstractRoute
 
     public function register(): void
     {
+        if ($this->isExposed() && $this->getName() === null) {
+            trigger_error('You cannot expose an unnamed rest route', E_USER_NOTICE);
+        }
         \register_rest_route($this->getNamespace(), $this->getPath(), $this->getArgs());
     }
 
