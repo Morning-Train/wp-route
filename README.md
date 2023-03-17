@@ -68,7 +68,7 @@ composer require morningtrain/wp-route
 
 ```php
 // /routes/myroute.php
-use \Morningtrain\WP\Route\Route;
+use \Morningtrain\WP\Facades\Route;
 
 // Set up a route on the /myroute URL and call MyrouteController::myRoute as callback
 Route::get('/myroute','MyrouteController::myRoute');
@@ -87,7 +87,7 @@ class MyrouteController extends \Morningtrain\WP\Route\Abstracts\AbstractControl
 
 ```php
 // /routes/kittens.php
-use \Morningtrain\WP\Route\Route;
+use \Morningtrain\WP\Facades\Route;
 
 // Set up a route on the /kitten/1 URL and call KittenController::kittenById as callback
 Route::get('/kitten/{kitten_id}','KittenController::kittenById');
@@ -107,7 +107,7 @@ class KittenController extends \Morningtrain\WP\Route\Abstracts\AbstractControll
 
 ```php
 // /routes/kittens.php
-use \Morningtrain\WP\Route\Route;
+use \Morningtrain\WP\Facades\Route;
 
 // Set up a route on the /kitten/1 URL and call KittenController::kitten as callback
 Route::get('/kitten/{kitten_id}','KittenController::kitten')->name('kitten');
@@ -124,9 +124,9 @@ class KittenController extends \Morningtrain\WP\Route\Abstracts\AbstractControll
 
 // In some template or hook you can now get and check for the named route
 // Get Url for Kittens Route
-$url = \Morningtrain\WP\Route\RouteService::getUrl('kittens',['kitten_id' => 1]); // Would return /kitten/1
+$url = Route::route('kittens',['kitten_id' => 1]); // Would return /kitten/1
 // Check if currently on kitten route
-$bool = \Morningtrain\WP\Route\RouteService::isCurrentRoute('kitten');
+$bool = Route::current()->getName() === 'kitten';
 ```
 
 ### Grouping Routes
@@ -136,7 +136,7 @@ You may group a set of routes to apply a shared prefix to all of them or to appl
 #### With prefix
 
 ```php
-use \Morningtrain\WP\Route\Route;
+use \Morningtrain\WP\Facades\Route;
 Route::prefix('my-prefix')->group(function(){
     Route::get('foo',FooController::class); // url will be /my-prefix/foo
     Route::get('bar',BarController::class); // url will be /my-prefix/bar
@@ -146,7 +146,7 @@ Route::prefix('my-prefix')->group(function(){
 #### With middleware
 
 ```php
-use \Morningtrain\WP\Route\Route;
+use \Morningtrain\WP\Facades\Route;
 // Users must now be logged in to view these two routes
 Route::middleware('auth')->group(function(){
     Route::get('foo',FooController::class);
@@ -157,7 +157,7 @@ Route::middleware('auth')->group(function(){
 #### With both prefix and middleware
 
 ```php
-use \Morningtrain\WP\Route\Route;
+use \Morningtrain\WP\Facades\Route;
 Route::prefix('my-prefix')
 ->middleware('auth')
 ->group(function(){
@@ -212,7 +212,7 @@ be `\Symfony\Component\HttpFoundation\Response` and will be sent automatically. 
 custom `\Morningtrain\WP\Route\Responses\WPErrorResponse` that are then displayed using `wp_die()`
 
 ```php
-use Morningtrain\WP\Route\Route;
+use Morningtrain\WP\Facades\Route;
 use \Symfony\Component\HttpFoundation\Request;
 Route::middleware([function(Request $request, $next){
     if(!\is_user_logged_in()){

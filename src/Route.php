@@ -13,6 +13,11 @@ class Route
 {
     protected static Container $container;
 
+    /**
+     * Initialize the router and optionally load all .php files in a directory
+     *
+     * @param  string|array|null  $path
+     */
     public static function setup(null|string|array $path = null)
     {
         static::$container = new Container();
@@ -28,24 +33,47 @@ class Route
         }
     }
 
+    /**
+     * Load all files in a directory
+     * If router has not been initialized then it will be done here as well
+     *
+     * @param  string|array  $path
+     */
     public static function loadDir(string|array $path)
     {
-        if(!isset(static::$container)){
-            throw new \Exception('No app container found. Make sure that Route has been setup with Route::setup()');
+        if (! isset(static::$container)) {
+            static::setup();
         }
         Loader::create($path);
     }
 
+    /**
+     * Get the illuminate app container
+     *
+     * @return Container
+     */
     public static function getContainer(): Container
     {
         return static::$container;
     }
 
+    /**
+     * Make rewrite router
+     *
+     * @return RewriteRouter
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
     public static function rewriteRouter(): RewriteRouter
     {
         return static::getContainer()->make('rewrite-router');
     }
 
+    /**
+     * Make Rest router
+     *
+     * @return RestRouter
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
     public static function restRouter(): RestRouter
     {
         return static::getContainer()->make('rest-router');

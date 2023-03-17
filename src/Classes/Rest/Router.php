@@ -70,4 +70,9 @@ class Router extends AbstractRouteFactory
         }
         echo "<script>var {$this->exposeVar} = " . json_encode($object) . ";</script>";
     }
+
+    public function namespace(string $namespace): Group
+    {
+        return $this->newGroup()->setGroup($this->currentGroup)->namespace($namespace);
+    }
 }
