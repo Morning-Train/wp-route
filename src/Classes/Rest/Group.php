@@ -50,7 +50,7 @@ class Group extends AbstractGroup
             return $this->public;
         }
 
-        return $this->group?->isPublic();
+        return $this->group?->isPublic() ?? false;
     }
 
     public function expose(bool $expose): static
@@ -66,6 +66,6 @@ class Group extends AbstractGroup
             return $this->exposed;
         }
 
-        return $this->group?->isExposed();
+        return $this->group?->isExposed() ?? false;
     }
 }
