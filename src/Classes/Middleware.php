@@ -25,7 +25,7 @@ class Middleware
      * @param  string  $name
      * @param  array  $arguments
      */
-    public static function __callStatic(string $name, array $arguments): void
+    public static function __callStatic(string $name, array $arguments)
     {
         // Split middleware with params
         if (str_contains($name, ':')) {
